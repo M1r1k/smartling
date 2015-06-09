@@ -15,13 +15,13 @@ use Drupal\Core\Entity\Entity;
  *   id = "smartling_entity_data",
  *   label = @Translation("Smartling Entity Data"),
  *   controllers = {
- *     "storage" => "Drupal\smartling\SmartlingStorageController"
+ *     "storage" = "Drupal\smartling\SmartlingStorageController",
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder"
  *   },
  *   base_table = "smartling_entity_data",
  *   fieldable = FALSE,
  *   entity_keys = {
- *     "id" = "eid",
+ *     "id" = "eid"
  *   }
  *
  * )
