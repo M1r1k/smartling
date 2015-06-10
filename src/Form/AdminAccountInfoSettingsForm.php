@@ -190,7 +190,7 @@ class AdminAccountInfoSettingsForm extends ConfigFormBase {
     parent::submitForm($form, $form_state);
   }
 
-  
+
   /**
    * Hide last 10 characters in string.
    *
