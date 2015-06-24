@@ -13,7 +13,7 @@ class AdminSettingsController {
 
   private function wrapInFieldset(array $form, $title) {
     return array(
-      '#type' => 'fieldset',
+      '#type' => 'details',//'fieldset',
       '#group' => 'smartling',
       '#title' => $title,
       '#attributes' => array(
@@ -39,15 +39,18 @@ class AdminSettingsController {
     );
 
     $output['smartling'] = array(
-      '#type' => 'vertical_tabs',
+//      '#type' => 'vertical_tabs',
+//      '#title' => '123'
 //      '#attached' => array(
 //        'js' => array(drupal_get_path('module', 'smartling') . '/js/smartling_admin.js'),
 //        'css' => array(drupal_get_path('module', 'smartling') . '/css/smartling_admin.css'),
 //      ),
     );
 
-    $settings_forms = ['Drupal\smartling\Form\AdminAccountInfoSettingsForm' => 'Account info'];
-      //module_invoke_all('smartling_settings_form_info');
+    $settings_forms = [
+      'Drupal\smartling\Form\AdminAccountInfoSettingsForm' => 'Account info',
+    ];
+    //module_invoke_all('smartling_settings_form_info');
 
     foreach ($settings_forms as $machine_name => $title) {
       $form = \Drupal::formBuilder()->getForm($machine_name);//drupal_get_form($machine_name);

@@ -175,7 +175,7 @@ class AdminAccountInfoSettingsForm extends ConfigFormBase {
 
 
 
-    return parent::buildForm($form, $form_state);
+    return $form;//parent::buildForm($form, $form_state);
   }
 
   /**
