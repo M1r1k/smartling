@@ -1,0 +1,5 @@
+api_url: 'https://capi.smartling.com/v1'
+project_id: ''
+key: ''
+callback_url_use: 1
+auto_authorize_content: 1
