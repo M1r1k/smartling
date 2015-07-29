@@ -1,0 +1,5 @@
+log_mode: 1
+async_mode: 1
+convert_entities_before_translation: 1
+ui_translations_merge_mode: 1
+custom_regexp_placeholder: '(@|%|!)[\w-]+'

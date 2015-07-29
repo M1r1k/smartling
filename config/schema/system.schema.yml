@@ -1,9 +1,40 @@
 # Schema for the configuration files of the Smartling module.
 
-smartling:
+smartling.account_info:
   type: config_object
-  label: 'Smartling settings'
+  label: 'Smartling account'
   mapping:
-    smartling_api_url:
-      type: uri
-      label: 'Smartling API url'
+    api_url:
+      type: string
+      label: 'API URL'
+    project_id:
+      type: string
+      label: 'Project ID'
+    smartling_key:
+      type: string
+      label: 'Key'
+    callback_url_use:
+      type: boolean
+      label: 'Use Smartling callback: /smartling/callback/%cron_key'
+    auto_authorize_content:
+      type: boolean
+      label: 'Auto authorize content'
+smartling.expert:
+  type: config_object
+  label: 'Smartling expert'
+  mapping
+    log_mode:
+      type: boolean
+      label: 'Smartling log'
+    async_mode:
+      type: boolean
+      label: 'Asynchronous mode'
+    convert_entities_before_translation:
+      type: boolean
+      label: 'Convert entities before translation'
+    ui_translations_merge_mode:
+      type: boolean
+      label: 'UI translation mode'
+    custom_regexp_placeholder:
+      type: string
+      label: 'Custom RegExp for placeholder'
