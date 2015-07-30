@@ -4,7 +4,7 @@ smartling.settings:
   type: config_object
   label: 'Smartling account'
   mapping:
-    entities_translatable:
+#    entities_translatable:
     type: sequence
     account_info:
       type: mapping
@@ -24,9 +24,15 @@ smartling.settings:
         auto_authorize_content:
           type: boolean
           label: 'Auto authorize content'
+        target_locales.*:
+          type: string
+          label: 'Target langauge'
+        target_locales_text_keys.*:
+          type: string
+          label: 'Target langauge text key'
     expert:
       type: mapping
-      mapping
+      mapping:
         log_mode:
           type: boolean
           label: 'Smartling log'

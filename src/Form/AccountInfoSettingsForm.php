@@ -68,7 +68,6 @@ class AccountInfoSettingsForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $url = Url::fromRoute('entity.configurable_language.collection');
-
 //    $form['account_info'] = array(
 //      'actions' => array(
 //        '#type' => 'actions',
@@ -82,6 +81,10 @@ class AccountInfoSettingsForm extends ConfigFormBase {
     $form['account_info']['title'] = [
       '#type' => 'item',
       '#title' => t('Account info'),
+      '#attached' => [
+        'library' => ['smartling/smartling.admin'],
+        'drupalSettings' => ['smartling' => ['checkAllId' => ['#edit-target-locales']]],
+      ]
     ];
 
     $form['account_info']['api_url'] = [
@@ -113,52 +116,54 @@ class AccountInfoSettingsForm extends ConfigFormBase {
       '#required' => FALSE,
     ];
 
-    //@ToDo: replace direct functon call with a wrapper
-//    $target_language_options_list = locale_translatable_language_list();
-//    if (!empty($target_language_options_list)) {
-//      foreach($target_language_options_list as $k => $v) {
-//        $target_language_options_list[$k] = $v->getName();
-//      }
-//      $form['account_info']['target_locales'] = array(
-//        '#type' => 'checkboxes',
-//        '#options' => $target_language_options_list,
-//        '#title' => t('Target Locales'),
-//        '#description' => t('In order to get values for these fields, please visit API section of Smartling dashboard: https://dashboard.smartling.com/settings/api.htm'),
-//        '#default_value' => $config->get('smartling_target_locales'),//$settings->getTargetLocales(),
-//        '#prefix' => '<div class="wrap-target-locales">',
-//      );
-//
-//      $total = count($target_language_options_list);
-//      $counter = 0;
-//      $locales_convert_array = $config->get('smartling_locales_convert_array');//$settings->getLocalesConvertArray();
-//      foreach (array_keys($target_language_options_list) as $langcode) {
-//        $counter++;
-//
-//        $form['account_info']['target_locales_text_key_' . $langcode] = array(
-//          '#type' => 'textfield',
-//          '#title' => '',
-//          '#title_display' => 'invisible',
-//          '#default_value' => (isset($locales_convert_array[$langcode]) && ($locales_convert_array[$langcode] != $langcode)) ? $locales_convert_array[$langcode] : '',
-//          '#size' => 6,
-//          '#maxlength' => 10,
-//          '#required' => FALSE,
+    /* @var \Drupal\Core\Language\LanguageInterface[] $target_language_options_list */
+    $target_language_options_list = locale_translatable_language_list();
+    if (!empty($target_language_options_list)) {
+      foreach ($target_language_options_list as $k => $v) {
+        $target_language_options_list[$k] = $v->getName();
+      }
+      $form['account_info']['target_locales'] = [
+        '#type' => 'checkboxes',
+        '#options' => $target_language_options_list,
+        '#title' => t('Target Locales'),
+        '#description' => t('In order to get values for these fields, please visit API section of Smartling dashboard: https://dashboard.smartling.com/settings/api.htm'),
+        '#default_value' => $this->config('smartling.settings')->get('account_info.target_locales'),
+        '#prefix' => '<div class="wrap-target-locales">',
+      ];
+
+      $total = count($target_language_options_list);
+      $counter = 0;
+      $form['account_info']['target_locales_text_keys'] = [
+        '#tree' => TRUE,
+      ];
+      foreach (array_keys($target_language_options_list) as $langcode) {
+        $counter++;
+
+        $form['account_info']['target_locales_text_keys'][$langcode] = [
+          '#type' => 'textfield',
+          '#title' => '',
+          '#title_display' => 'invisible',
+          '#default_value' => $this->config('smartling.settings')->get('account_info.target_locales_text_keys.' . $langcode),
+          '#size' => 6,
+          '#maxlength' => 10,
+          '#required' => FALSE,
 //          '#states' => array(
 //            'disabled' => array(
-//              ':input[name="target_locales[' . $langcode . ']"]' => array('checked' => FALSE),
+//              ':input[name="target_locales[' . $langcode . ']"]' => ['checked' => FALSE],
 //            ),
 //          ),
-//        );
-//
-//        if ($counter == 1) {
-//          $form['account_info']['target_locales_text_key_' . $langcode]['#prefix'] = '<div class="wrap-target-locales-text-key">';
-//        }
-//
-//        if ($counter == $total) {
-//          $form['account_info']['target_locales_text_key_' . $langcode]['#suffix'] = '</div></div>';
-//        }
-//      }
-//    }
-//    else {
+        ];
+
+        if ($counter == 1) {
+          $form['account_info']['target_locales_text_keys'][$langcode]['#prefix'] = '<div class="wrap-target-locales-text-key">';
+        }
+
+        if ($counter == $total) {
+          $form['account_info']['target_locales_text_keys'][$langcode]['#suffix'] = '</div></div>';
+        }
+      }
+    }
+    else {
       $form['account_info']['target_locales'] = [
         '#type' => 'checkboxes',
         '#options' => array(),
@@ -167,7 +172,7 @@ class AccountInfoSettingsForm extends ConfigFormBase {
         // @todo build link directly using router.
         '#description' => \Drupal::l(t('At least two languages must be enabled. Please change language settings.'), $url),
       ];
-//    }
+    }
 
     $form['account_info']['default_language'] = [
       '#type' => 'item',
@@ -211,13 +216,18 @@ class AccountInfoSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $this->config('smartling.account_info')
+    $this->config('smartling.settings')
       ->set('account_info.api_url', $form_state->getValue('api_url'))
       ->set('account_info.project_id', $form_state->getValue('project_id'))
       ->set('account_info.key', $form_state->getValue('key'))
       ->set('account_info.callback_url_use', $form_state->getValue('callback_url_use'))
       ->set('account_info.auto_authorize_content', $form_state->getValue('auto_authorize_content'))
-      ->save();
+      ->set('account_info.target_locales', $form_state->getValue('target_locales'));
+
+    foreach ($form_state->getValue('target_locales_text_keys') as $lang => $enabled) {
+      $this->config('smartling.settings')->set('account_info.target_locales_text_keys.' . $lang, $enabled);
+    }
+    $this->config('smartling.settings')->save();
 
     parent::submitForm($form, $form_state);
   }
