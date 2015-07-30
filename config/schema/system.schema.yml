@@ -1,40 +1,42 @@
 # Schema for the configuration files of the Smartling module.
 
-smartling.account_info:
+smartling.settings:
   type: config_object
   label: 'Smartling account'
   mapping:
-    api_url:
-      type: string
-      label: 'API URL'
-    project_id:
-      type: string
-      label: 'Project ID'
-    key:
-      type: string
-      label: 'Key'
-    callback_url_use:
-      type: boolean
-      label: 'Use Smartling callback: /smartling/callback/%cron_key'
-    auto_authorize_content:
-      type: boolean
-      label: 'Auto authorize content'
-smartling.expert:
-  type: config_object
-  label: 'Smartling expert'
-  mapping
-    log_mode:
-      type: boolean
-      label: 'Smartling log'
-    async_mode:
-      type: boolean
-      label: 'Asynchronous mode'
-    convert_entities_before_translation:
-      type: boolean
-      label: 'Convert entities before translation'
-    ui_translations_merge_mode:
-      type: boolean
-      label: 'UI translation mode'
-    custom_regexp_placeholder:
-      type: string
-      label: 'Custom RegExp for placeholder'
+    account_info:
+      type: mapping
+      mapping:
+        api_url:
+          type: string
+          label: 'API URL'
+        project_id:
+          type: string
+          label: 'Project ID'
+        key:
+          type: string
+          label: 'Key'
+        callback_url_use:
+          type: boolean
+          label: 'Use Smartling callback: /smartling/callback/%cron_key'
+        auto_authorize_content:
+          type: boolean
+          label: 'Auto authorize content'
+    expert:
+      type: mapping
+      mapping
+        log_mode:
+          type: boolean
+          label: 'Smartling log'
+        async_mode:
+          type: boolean
+          label: 'Asynchronous mode'
+        convert_entities_before_translation:
+          type: boolean
+          label: 'Convert entities before translation'
+        ui_translations_merge_mode:
+          type: boolean
+          label: 'UI translation mode'
+        custom_regexp_placeholder:
+          type: string
+          label: 'Custom RegExp for placeholder'

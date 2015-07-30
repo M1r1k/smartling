@@ -52,7 +52,7 @@ class AccountInfoSettingsForm extends ConfigFormBase {
    */
   protected function getEditableConfigNames() {
     return [
-      'smartling.account_info',
+      'smartling.settings',
     ];
   }
 
@@ -87,17 +87,17 @@ class AccountInfoSettingsForm extends ConfigFormBase {
     $form['account_info']['api_url'] = [
       '#type' => 'textfield',
       '#title' => t('API URL'),
-      '#default_value' => $this->config('smartling.account_info')->get('api_url'),
+      '#default_value' => $this->config('smartling.settings')->get('account_info.api_url'),
       '#size' => 25,
       '#maxlength' => 255,
       '#required' => FALSE,
-      '#description' => t('Set api url. Default: @api_url', ['@api_url' => $this->config('smartling.account_info')->get('api_url')]),
+      '#description' => t('Set api url. Default: @api_url', ['@api_url' => $this->config('smartling.settings')->get('account_info.api_url')]),
     ];
 
     $form['account_info']['project_id'] = [
       '#type' => 'textfield',
       '#title' => t('Project Id'),
-      '#default_value' => $this->config('smartling.account_info')->get('project_id'),
+      '#default_value' => $this->config('smartling.settings')->get('account_info.project_id'),
       '#size' => 25,
       '#maxlength' => 25,
       '#required' => TRUE,
@@ -107,7 +107,7 @@ class AccountInfoSettingsForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#title' => t('Key'),
       '#default_value' => '',
-      '#description' => t('Current key: @key', ['@key' => $this->hideKey($this->config('smartling.account_info')->get('key'))]),
+      '#description' => t('Current key: @key', ['@key' => $this->hideKey($this->config('smartling.settings')->get('account_info.key'))]),
       '#size' => 40,
       '#maxlength' => 40,
       '#required' => FALSE,
@@ -188,7 +188,7 @@ class AccountInfoSettingsForm extends ConfigFormBase {
     $form['account_info']['callback_url_use'] = [
       '#type' => 'checkbox',
       '#title' => t('Use Smartling callback: /smartling/callback/%cron_key'),
-      '#default_value' => $this->config('smartling.account_info')->get('callback_url_use'),
+      '#default_value' => $this->config('smartling.settings')->get('account_info.callback_url_use'),
       '#required' => FALSE,
     ];
 
@@ -200,7 +200,7 @@ class AccountInfoSettingsForm extends ConfigFormBase {
     $form['account_info']['auto_authorize_content'] = [
       '#type' => 'checkbox',
       '#title' => t('Auto authorize content'),
-      '#default_value' => $this->config('smartling.account_info')->get('auto_authorize_content'),
+      '#default_value' => $this->config('smartling.settings')->get('account_info.auto_authorize_content'),
       '#required' => FALSE,
     ];
 
@@ -212,11 +212,11 @@ class AccountInfoSettingsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->config('smartling.account_info')
-      ->set('api_url', $form_state->getValue('api_url'))
-      ->set('project_id', $form_state->getValue('project_id'))
-      ->set('key', $form_state->getValue('key'))
-      ->set('callback_url_use', $form_state->getValue('callback_url_use'))
-      ->set('auto_authorize_content', $form_state->getValue('auto_authorize_content'))
+      ->set('account_info.api_url', $form_state->getValue('api_url'))
+      ->set('account_info.project_id', $form_state->getValue('project_id'))
+      ->set('account_info.key', $form_state->getValue('key'))
+      ->set('account_info.callback_url_use', $form_state->getValue('callback_url_use'))
+      ->set('account_info.auto_authorize_content', $form_state->getValue('auto_authorize_content'))
       ->save();
 
     parent::submitForm($form, $form_state);
