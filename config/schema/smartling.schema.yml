@@ -4,6 +4,8 @@ smartling.settings:
   type: config_object
   label: 'Smartling account'
   mapping:
+    entities_translatable:
+    type: sequence
     account_info:
       type: mapping
       mapping:
