@@ -53,7 +53,7 @@ class AccountInfoSettingsForm extends ConfigFormBase {
   protected function getEditableConfigNames() {
     return [
       'smartling.settings',
-    ];
+    ]
   }
 
   /**
@@ -68,15 +68,6 @@ class AccountInfoSettingsForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $url = Url::fromRoute('entity.configurable_language.collection');
-//    $form['account_info'] = array(
-//      'actions' => array(
-//        '#type' => 'actions',
-//      ),
-//      '#attached' => array(
-//        'js' => array(drupal_get_path('module', 'smartling') . '/js/smartling_check_all.js'),
-//      ),
-//    );
-//    drupal_add_js(array('smartling' => array('checkAllId' => array('#edit-target-locales'))), 'setting');
 
     $form['account_info']['title'] = [
       '#type' => 'item',

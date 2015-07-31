@@ -39,6 +39,15 @@ class AdminSettingsController {
     //  '#prefix' => t('After you configure Smartling module you can <a href="@url">start submitting your content</a>.', array('@url' => url('admin/content/smartling-content'))),
     ];
 
+    $output['smartling'] = [
+      '#type' => 'details',
+      '#theme_wrappers' => array(),
+//      '#attached' => array(
+//        'js' => array(drupal_get_path('module', 'smartling') . '/js/smartling_admin.js'),
+//        'css' => array(drupal_get_path('module', 'smartling') . '/css/smartling_admin.css'),
+//      ),
+    ];
+
     $settings_forms = [
       'Drupal\smartling\Form\AccountInfoSettingsForm' => 'Account info',
       'Drupal\smartling\Form\ExpertInfoSettingsForm' => 'Expert info',
