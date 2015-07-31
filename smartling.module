@@ -6,6 +6,15 @@
  */
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
+use Drupal\smartling\Queue\SmartlingQueueFactory;
+
+// @todo move them to classes.
+define('SMARTLING_STATUS_IN_QUEUE', 0);
+define('SMARTLING_STATUS_IN_TRANSLATE', 1);
+define('SMARTLING_STATUS_TRANSLATED', 2);
+define('SMARTLING_STATUS_CHANGE', 3);
+define('SMARTLING_STATUS_FAILED', 4);
+define('SMARTLING_CRON_RUN_INTERVAL', 3 * 60 * 60);
 
 ///**
 // * Implements hook_form_FORM_ID_alter()
@@ -38,3 +47,23 @@ use Drupal\Core\Render\Element;
 //  }
 //  $config->save();
 //}
+
+/**
+ * Implements hook_cron().
+ */
+function smartling_cron() {
+  $cron_last = \Drupal::state()->get('system.cron_last');
+  if ( $cron_last + SMARTLING_CRON_RUN_INTERVAL > time()) {
+    return;
+  }
+
+  $ids = \Drupal::entityQuery('smartling_entity_data')
+    ->condition('status', SMARTLING_STATUS_IN_TRANSLATE)
+    ->execute();
+  $manager = \Drupal::service('smartling.manager');
+  if (!empty($ids)) {
+    /* @var SmartlingQueueFactory $queue */
+    $manager->addCheckStatusQueueWorker($ids);
+  }
+}
+

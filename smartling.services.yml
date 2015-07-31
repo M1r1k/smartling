@@ -1,0 +1,6 @@
+services:
+  logger.channel.smartling:
+    parent: logger.channel_base
+    arguments: ['smartling']
+  smartling.manager:
+    class: Drupal\smartling\SmartlingManager

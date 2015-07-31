@@ -7,6 +7,7 @@
 
 namespace Drupal\smartling\Entity;
 use Drupal\Core\Annotation\Translation;
+use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
 use Drupal\Core\Entity\Annotation\ContentEntityType;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\Entity;
@@ -31,7 +32,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *
  * )
  */
-class SmartlingEntityData extends ContentEntityBase {
+class SmartlingEntityData extends ContentEntityBase implements SmartlingEntityDataInterface {
   /**
    * Provides base field definitions for an entity type.
    *
@@ -133,5 +134,101 @@ class SmartlingEntityData extends ContentEntityBase {
     // @todo add other fields.
 
     return $fields;
+  }
+
+  public function getRelatedEntityId() {
+    return $this->rid->value;
+  }
+
+  public function setRelatedEntityId($related_entity_id) {
+    $this->rid->value = $related_entity_id;
+  }
+
+  public function getRelatedEntityTypeId() {
+    return $this->entity_type->value;
+  }
+
+  public function setRelatedEntityTypeId($related_entity_type_id) {
+    $this->entity_type->value = $related_entity_type_id;
+  }
+
+  public function getRelatedEntityBundleId() {
+    return $this->bundle->value;
+  }
+
+  public function setRelatedEntityBundleId($related_entity_bundle_id) {
+    $this->bundle->value = $related_entity_bundle_id;
+  }
+
+  public function getOriginalLanguageCode() {
+    return $this->original_language->value;
+  }
+
+  public function setOriginalLanguageCode($language_code) {
+    $this->original_language->value = $language_code;
+  }
+
+  public function getTargetLanguageCode() {
+    return $this->target_language->value;
+  }
+
+  public function setTargetLanguageCode($language_code) {
+    $this->target_language->value = $language_code;
+  }
+
+  public function getTitle() {
+    return $this->title->value;
+  }
+
+  public function setTitle($title) {
+    $this->title->value = $title;
+  }
+
+  public function getFileName() {
+    return $this->fiel_name->value;
+  }
+
+  public function setFileName($file_name) {
+    $this->fiel_name->value = $file_name;
+  }
+
+  public function getTranslatedFileName() {
+    // TODO: Implement getTranslatedFileName() method.
+  }
+
+  public function setTranslatedFileName($file_name) {
+    // TODO: Implement setTranslatedFileName() method.
+  }
+
+  public function getProgress() {
+    // TODO: Implement getProgress() method.
+  }
+
+  public function setProgress() {
+    // TODO: Implement setProgress() method.
+  }
+
+  public function getSubmitter() {
+    // TODO: Implement getSubmitter() method.
+  }
+
+  public function setSubmitter($submitter) {
+    // TODO: Implement setSubmitter() method.
+  }
+
+  public function getSubmissionDate() {
+    // TODO: Implement getSubmissionDate() method.
+  }
+
+  public function getDownloadStatus() {
+    // TODO: Implement getDownloadStatus() method.
+  }
+
+  public function getStatus() {
+    return $this->status->value;
+  }
+
+  public function getContentHash() {
+    // TODO: Implement getContentHash() method.
   }
 }
