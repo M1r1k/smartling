@@ -2,6 +2,7 @@
 
 namespace Drupal\smartling\Entity;
 
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityInterface;
 
 interface SmartlingEntityDataInterface extends EntityInterface {
@@ -54,4 +55,23 @@ interface SmartlingEntityDataInterface extends EntityInterface {
 
   public function getContentHash();
 
+  public function setStatusByEvent($event);
+
+  /**
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   * @return SmartlingEntityDataInterface
+   */
+  public static function createFromDrupalEntity(ContentEntityInterface $entity);
+
+  /**
+   * @param array $conditions
+   * @return SmartlingEntityDataInterface[]
+   */
+  public static function loadMultipleByConditions(array $conditions);
+
+  /**
+   * @param array $conditions
+   * @return SmartlingEntityDataInterface
+   */
+  public static function loadByConditions(array $conditions);
 }

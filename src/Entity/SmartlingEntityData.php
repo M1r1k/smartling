@@ -10,6 +10,7 @@ use Drupal\Core\Annotation\Translation;
 use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
 use Drupal\Core\Entity\Annotation\ContentEntityType;
 use Drupal\Core\Entity\ContentEntityBase;
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\Entity;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
@@ -230,5 +231,72 @@ class SmartlingEntityData extends ContentEntityBase implements SmartlingEntityDa
 
   public function getContentHash() {
     // TODO: Implement getContentHash() method.
+  }
+
+  public function setStatusByEvent($event) {
+    if (is_null($event)) {
+      return;
+    }
+
+    $status = $this->getStatus();
+    switch ($event) {
+      case SMARTLING_STATUS_EVENT_SEND_TO_UPLOAD_QUEUE:
+        if (empty($status) || ($status == SMARTLING_STATUS_CHANGE)) {
+          $status = SMARTLING_STATUS_IN_QUEUE;
+        }
+        break;
+
+      case SMARTLING_STATUS_EVENT_UPLOAD_TO_SERVICE:
+        $status = SMARTLING_STATUS_IN_TRANSLATE;
+        break;
+
+      case SMARTLING_STATUS_EVENT_DOWNLOAD_FROM_SERVICE:
+      case SMARTLING_STATUS_EVENT_UPDATE_FIELDS:
+        if ($status != SMARTLING_STATUS_CHANGE && $this->getProgress() == 100) {
+          $status = SMARTLING_STATUS_TRANSLATED;
+        }
+        break;
+
+      case SMARTLING_STATUS_EVENT_NODE_ENTITY_UPDATE:
+        $status = SMARTLING_STATUS_CHANGE;
+        break;
+
+      case SMARTLING_STATUS_EVENT_FAILED_UPLOAD:
+        $status = SMARTLING_STATUS_FAILED;
+        break;
+    }
+
+    $this->setStatus($status);
+  }
+
+  /**
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   * @return SmartlingEntityDataInterface
+   */
+  public static function createFromDrupalEntity(ContentEntityInterface $entity) {
+    // TODO: Implement createFromDrupalEntity() method.
+  }
+
+  /**
+   * @param array $conditions
+   * @return SmartlingEntityDataInterface[]
+   */
+  public static function loadMultipleByConditions(array $conditions) {
+    $query = \Drupal::entityQuery('smartling_entity_data');
+    foreach ($conditions as $name => $value) {
+      $query = $query->condition($name, $value);
+    }
+
+    $ids = $query->execute();
+    return static::loadMultiple($ids);
+  }
+
+  /**
+   * @param array $conditions
+   * @return SmartlingEntityDataInterface
+   */
+  public static function loadByConditions(array $conditions) {
+    $entities = static::loadMultipleByConditions($conditions);
+    return reset($entities);
   }
 }
