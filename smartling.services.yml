@@ -4,3 +4,6 @@ services:
     arguments: ['smartling']
   smartling.manager:
     class: Drupal\smartling\SmartlingManager
+  plugin.manager.smartling.source:
+    class: Drupal\smartling\SourceManager
+    parent: default_plugin_manager

@@ -30,7 +30,6 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *   entity_keys = {
  *     "id" = "eid"
  *   }
- *
  * )
  */
 class SmartlingEntityData extends ContentEntityBase implements SmartlingEntityDataInterface {
