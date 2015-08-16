@@ -14,6 +14,7 @@ use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\Entity;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Language\LanguageInterface;
 
 /**
  * Defines the node entity class.
@@ -33,7 +34,15 @@ use Drupal\Core\Field\BaseFieldDefinition;
  * )
  */
 class SmartlingEntityData extends ContentEntityBase implements SmartlingEntityDataInterface {
+
   /**
+   * Overrides Entity::__construct().
+   */
+  public function __construct(array $values) {
+    parent::__construct($values, 'smartling_entity_data');
+  }
+
+    /**
    * Provides base field definitions for an entity type.
    *
    * Implementations typically use the class
@@ -269,11 +278,32 @@ class SmartlingEntityData extends ContentEntityBase implements SmartlingEntityDa
   }
 
   /**
-   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
-   * @return SmartlingEntityDataInterface
+   * {@inheritdoc}
    */
-  public static function createFromDrupalEntity(ContentEntityInterface $entity) {
-    // TODO: Implement createFromDrupalEntity() method.
+  public static function createFromDrupalEntity(ContentEntityInterface $entity, LanguageInterface $target_language) {
+    $entity = new static([
+      'rid' => $entity->id(),
+      'entity_type' => $entity->getEntityType(),
+      'bundle' => $entity->bundle(),
+      'original_language' => $entity->language()->getId(),
+      // @todo handle exception when target language invalid or not configured
+      // for given entity.
+      'target_language' => $target_language->getId(),
+      'title' => $entity->label(),
+      'submitter' => \Drupal::currentUser()->id(),
+      'submission_date' => REQUEST_TIME,
+      'download' => '',
+      'status' => 0,
+      'content_hash' => ''
+    ]);
+
+    $entity->setFileName(self::generateXmlFileName($entity));
+
+    return ;
+  }
+
+  public static function generateXmlFileName(SmartlingEntityDataInterface $entity) {
+    return strtolower(trim(preg_replace('#\W+#', '_', $entity->getTitle()), '_')) . '_' . $entity->getEntityType() . '_' . $entity->getRID() . '.xml';
   }
 
   /**

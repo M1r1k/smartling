@@ -4,6 +4,7 @@ namespace Drupal\smartling\Entity;
 
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Language\LanguageInterface;
 
 interface SmartlingEntityDataInterface extends EntityInterface {
 
@@ -59,9 +60,10 @@ interface SmartlingEntityDataInterface extends EntityInterface {
 
   /**
    * @param \Drupal\Core\Entity\ContentEntityInterface $entity
-   * @return SmartlingEntityDataInterface
+   * @param \Drupal\Core\Language\LanguageInterface $target_language
+   * @return \Drupal\smartling\Entity\SmartlingEntityDataInterface
    */
-  public static function createFromDrupalEntity(ContentEntityInterface $entity);
+  public static function createFromDrupalEntity(ContentEntityInterface $entity, LanguageInterface $target_language);
 
   /**
    * @param array $conditions

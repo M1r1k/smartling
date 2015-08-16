@@ -38,6 +38,7 @@ class ContentEntitySource extends SourcePluginBase {
    * @return \Drupal\Core\Entity\ContentEntityInterface|null
    */
   protected function getRelatedEntity(SmartlingEntityDataInterface $smartling_item) {
+    // @todo add static caching.
     return entity_load($smartling_item->getRelatedEntityTypeId(), $smartling_item->getRelatedEntityId());
   }
 
@@ -185,6 +186,7 @@ class ContentEntitySource extends SourcePluginBase {
    * {@inheritdoc}
    */
   public function getItemTypeLabel($type) {
+    // @todo inject entity manager.
     return \Drupal::entityManager()->getDefinition($type)->getLabel();
   }
 
