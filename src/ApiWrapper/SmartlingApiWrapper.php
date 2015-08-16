@@ -7,9 +7,7 @@
 
 namespace Drupal\smartling\ApiWrapper;
 
-use Drupal\smartling\ApiWrapperInterface;
-use Drupal\smartling\Log\SmartlingLog;
-use Drupal\smartling\Settings\SmartlingSettingsHandler;
+use Drupal\smartling\ApiWrapper\ApiWrapperInterface;
 use SmartlingAPI;
 
 /**
