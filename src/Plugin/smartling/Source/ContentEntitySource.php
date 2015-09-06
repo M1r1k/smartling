@@ -163,7 +163,7 @@ class ContentEntitySource extends SourcePluginBase {
     $entity = $this->getRelatedEntity($smartling_item);
     $file = $smartling_item->getFileName();
     // @todo process xml file and retrieve data.
-    $data = [];
+    $xml = [];
     $this->doSaveTranslations($entity, $data, $smartling_item->getTargetLanguageCode());
   }
 
@@ -232,12 +232,12 @@ class ContentEntitySource extends SourcePluginBase {
    *
    * @param \Drupal\Core\Entity\ContentEntityInterface $entity
    *   The entity for which the translation should be saved.
-   * @param array $data
+   * @param \Drupal\Core\Entity\ContentEntityInterface $translated_entity
    *   The translation data for the fields.
    * @param string $target_langcode
    *   The target language.
    */
-  protected function doSaveTranslations(ContentEntityInterface $entity, array $data, $target_langcode) {
+  protected function doSaveTranslations(ContentEntityInterface $entity, ContentEntityInterface $translated_entity, $target_langcode) {
     // If the translation for this language does not exist yet, initialize it.
     if (!$entity->hasTranslation($target_langcode)) {
       $entity->addTranslation($target_langcode, $entity->toArray());
@@ -261,4 +261,6 @@ class ContentEntitySource extends SourcePluginBase {
     }
     $translation->save();
   }
+
+
 }

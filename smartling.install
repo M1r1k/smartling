@@ -67,12 +67,24 @@ function smartling_schema() {
         'not null' => TRUE,
         'default' => '',
       ),
+      'original_file' => array(
+        'description' => 'File id with original content.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+      ),
       'translated_file_name' => array(
         'description' => 'File with translated content.',
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
         'default' => '',
+      ),
+      'translated_file' => array(
+        'description' => 'File id with translated content.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
       ),
       'progress' => array(
         'description' => 'Progress',

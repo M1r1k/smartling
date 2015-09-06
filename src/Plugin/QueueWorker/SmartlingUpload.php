@@ -88,10 +88,11 @@ class SmartlingUpload extends QueueWorkerBase implements ContainerFactoryPluginI
       $entity_data_array[$file_name][] = $entity;
     }
 
-    foreach ($entity_data_array as $file_name => $entity_array) {
+    foreach ($entity_data_array as $file_name => $entity) {
       $submission = reset($entity_array);
-      $processor = $this->entity_processor_factory->getProcessor($submission->getEntity());
-      $content = $processor->exportContent();
+      $serializer = \Drupal::service('serializer');
+      $xml = $serializer->serialize($entity, 'smartling_xml');
+      $file = file_save_data($xml, 'private://' . $file_name);
 
       $event = $this->file_transport->upload($content, $submission, $target_locales[$file_name]);
 

@@ -42,35 +42,8 @@ class SmartlingEntityData extends ContentEntityBase implements SmartlingEntityDa
     parent::__construct($values, 'smartling_entity_data');
   }
 
-    /**
-   * Provides base field definitions for an entity type.
-   *
-   * Implementations typically use the class
-   * \Drupal\Core\Field\BaseFieldDefinition for creating the field definitions;
-   * for example a 'name' field could be defined as the following:
-   * @code
-   * $fields['name'] = BaseFieldDefinition::create('string')
-   *   ->setLabel(t('Name'));
-   * @endcode
-   *
-   * By definition, base fields are fields that exist for every bundle. To
-   * provide definitions for fields that should only exist on some bundles, use
-   * \Drupal\Core\Entity\FieldableEntityInterface::bundleFieldDefinitions().
-   *
-   * The definitions returned by this function can be overridden for all
-   * bundles by hook_entity_base_field_info_alter() or overridden on a
-   * per-bundle basis via 'base_field_override' configuration entities.
-   *
-   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
-   *   The entity type definition. Useful when a single class is used for multiple,
-   *   possibly dynamic entity types.
-   *
-   * @return \Drupal\Core\Field\FieldDefinitionInterface[]
-   *   An array of base field definitions for the entity type, keyed by field
-   *   name.
-   *
-   * @see \Drupal\Core\Entity\EntityManagerInterface::getFieldDefinitions()
-   * @see \Drupal\Core\Entity\FieldableEntityInterface::bundleFieldDefinitions()
+  /**
+   * {@inheritdoc}
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields['eid'] = BaseFieldDefinition::create('integer')
@@ -123,6 +96,22 @@ class SmartlingEntityData extends ContentEntityBase implements SmartlingEntityDa
       ->setLabel(t('File with original content'))
       ->setDescription(t('File with original content.'))
       ->setReadOnly(TRUE);
+
+    $fields['translated_file'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('File with translations'))
+      ->setDescription(t('Contains entity translated by Smartling.'))
+      ->setRevisionable(TRUE)
+      ->setSetting('target_type', 'file')
+      ->setSetting('handler', 'default')
+      ->setTranslatable(FALSE);
+
+    $fields['translated_file'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('File with translations'))
+      ->setDescription(t('Contains entity translated by Smartling.'))
+      ->setRevisionable(TRUE)
+      ->setSetting('target_type', 'file')
+      ->setSetting('handler', 'default')
+      ->setTranslatable(FALSE);
 
     $fields['translated_file_name'] = BaseFieldDefinition::create('string')
       ->setLabel(t('File with translated content'))

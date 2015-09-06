@@ -53,7 +53,7 @@ class AccountInfoSettingsForm extends ConfigFormBase {
   protected function getEditableConfigNames() {
     return [
       'smartling.settings',
-    ]
+    ];
   }
 
   /**
@@ -67,6 +67,11 @@ class AccountInfoSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+    $node = \Drupal\node\Entity\Node::load(1);
+    $serializer = \Drupal::service('serializer');
+    echo json_encode($serializer->normalize($node, 'xml'));
+    echo json_encode($serializer->normalize($node, 'smartling_xml'));
+    echo $serializer->serialize($node, 'smartling_xml');
     $url = Url::fromRoute('entity.configurable_language.collection');
 
     $form['account_info']['title'] = [

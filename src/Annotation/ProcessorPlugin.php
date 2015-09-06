@@ -14,9 +14,9 @@ use Drupal\Component\Annotation\Plugin;
  *
  * @Annotation
  *
- * @see \Drupal\smartling\SourceManager
+ * @see \Drupal\smartling\ProcessorManager
  */
-class SourcePlugin extends Plugin {
+class ProcessorPlugin extends Plugin {
 
   /**
    * The plugin ID.

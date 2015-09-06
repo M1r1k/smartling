@@ -7,7 +7,9 @@
 
 namespace Drupal\smartling\ApiWrapper;
 
-use Drupal\smartling\ApiWrapper\ApiWrapperInterface;
+use Drupal\Core\Config\ConfigFactory;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use SmartlingAPI;
 
 /**
@@ -16,9 +18,9 @@ use SmartlingAPI;
 class SmartlingApiWrapper implements ApiWrapperInterface {
 
   /**
-   * @var SmartlingSettingsHandler
+   * @var ConfigFactory
    */
-  protected $configs;
+  protected $config;
 
   /**
    * The module handler.
@@ -42,20 +44,20 @@ class SmartlingApiWrapper implements ApiWrapperInterface {
    *   Return locale or NULL.
    */
   protected function convertLocaleDrupalToSmartling($locale) {
-    return smartling_convert_locale_drupal_to_smartling($locale);
+    return $this->config->get('account_info.target_locales.' . $locale);
   }
 
   /**
    * Initialize.
    *
-   * @param SmartlingSettingsHandler $settings_handler
-   * @param SmartlingLog $logger
+   * @param ConfigFactoryInterface $configs
+   * @param LoggerChannelInterface $logger
    */
-  public function __construct(SmartlingSettingsHandler $settings_handler, SmartlingLog $logger) {
-    $this->settingsHandler = $settings_handler;
+  public function __construct(ConfigFactoryInterface $configs, LoggerChannelInterface $logger) {
+    $this->settingsHandler = $configs->get('smartling_settings');
     $this->logger = $logger;
 
-    $this->setApi(new \SmartlingAPI($settings_handler->getApiUrl(), $settings_handler->getKey(), $settings_handler->getProjectId(), SMARTLING_PRODUCTION_MODE));
+    $this->setApi(new \SmartlingAPI($configs->get('account_info.api_url'), $configs->get('account_info.key'), $configs->get('account_info.project_id'), \SmartlingAPI::PRODUCTION_MODE));
   }
 
   /**
@@ -244,10 +246,10 @@ class SmartlingApiWrapper implements ApiWrapperInterface {
       ->setApproved(0)
       ->setOverwriteApprovedLocales(0);
 
-    if ($this->settingsHandler->getAutoAuthorizeContent()) {
+    if ($this->config->get('account_info.auto_authorize_content')) {
       $upload_params->setLocalesToApprove($locales_to_approve);
     }
-    if ($this->settingsHandler->getCallbackUrlUse()) {
+    if ($this->config->get('account_info.callback_url_use')) {
       $upload_params->setCallbackUrl($this->settingsHandler->getCallbackUrl());
     }
     $upload_params = $upload_params->buildParameters();
@@ -283,14 +285,14 @@ class SmartlingApiWrapper implements ApiWrapperInterface {
           Error: response code -> @code and message -> @message
           Upload params: @upload_params',
         array(
-          '@project_id' => $this->settingsHandler->getProjectId(),
+          '@project_id' => $this->config->get('account_info.project_id'),
           '@file_uri' => $file_path,
           '@d_locale' => implode('; ', $locales),
           '@s_locale' => implode('; ', $locales_to_approve),
           '@code' => $code,
           '@message' => implode(' || ', $messages),
           '@upload_params' => implode(' | ', $upload_params),
-        ), TRUE);
+        ));
     }
 
     return SMARTLING_STATUS_EVENT_FAILED_UPLOAD;
@@ -307,8 +309,7 @@ class SmartlingApiWrapper implements ApiWrapperInterface {
     $upload_result = $this->api->uploadContext($data);
 
     if ($this->api->getCodeStatus() !== 'SUCCESS') {
-      //error handling code
-      $this->logger->error('Smartling failed to upload context for module @angular_module with message: @message', array('@angular_module' => $data['url'], '@message' => $upload_result), TRUE);
+      $this->logger->error('Smartling failed to upload context for module @angular_module with message: @message', array('@angular_module' => $data['url'], '@message' => $upload_result));
       return -1;
     }
 
@@ -323,8 +324,7 @@ class SmartlingApiWrapper implements ApiWrapperInterface {
     $upload_result = $this->api->getContextStats($data);
 
     if ($this->api->getCodeStatus() !== 'SUCCESS') {
-      //error handling code
-      $this->logger->error('Smartling uploaded the context, but failed to get context statistics for request: @requestId  with message: @message', array('@requestId' => $requestId, '@message' => $upload_result), TRUE);
+      $this->logger->error('Smartling uploaded the context, but failed to get context statistics for request: @requestId  with message: @message', array('@requestId' => $requestId, '@message' => $upload_result));
       return -1;
     }
 
