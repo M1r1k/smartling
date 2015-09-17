@@ -2,13 +2,12 @@
 
 /**
  * @file
- * Contains \Drupal\tmgmt\SourcePluginInterface.
+ * Contains \Drupal\smartling\ProcessorPluginInterface.
  */
 
 namespace Drupal\smartling;
 
 use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\smartling\Entity\SmartlingEntityDataInterface;
 use Drupal\Component\Plugin\PluginInspectionInterface;
 
 /**
@@ -27,7 +26,7 @@ interface ProcessorPluginInterface extends PluginInspectionInterface {
   /**
    * Build xml string
    *
-   * @param SmartlingEntityDataInterface $smartling_entity
+   * @param \Drupal\smartling\SmartlingEntityDataInterface $smartling_entity
    *   Smartling entit.
    *
    * @return \DOMDocument Returns XML object.

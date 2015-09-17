@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\node\Plugin\Action\UnpublishByKeywordNode.
+ * Contains \Drupal\smartling\Plugin\Action\TranslateNode.
  */
 
 namespace Drupal\smartling\Plugin\Action;
@@ -27,11 +27,13 @@ class TranslateNode extends ActionBase {
    */
   public function executeMultiple(array $entities) {
     // @todo add support of sync mode here.
-    /** @var SmartlingManager $smartling_manager */
+    /** @var \Drupal\smartling\SmartlingManager $smartling_manager */
     $smartling_manager = \Drupal::service('smartling.manager');
+    $language_manager = \Drupal::languageManager();
     $smartling_ids = [];
-    foreach (\Drupal::config('smartling.schema')->get('target_locales') as $language_code) {
-      $language = \Drupal::languageManager()->getLanguage($language_code);
+    $config = \Drupal::config('smartling.schema')->get('target_locales');
+    foreach ($config as $language_code) {
+      $language = $language_manager->getLanguage($language_code);
       foreach ($entities as $entity) {
         $smartling_manager[] = $smartling_manager->getSmartlingEntityFromContentEntity($entity, $language)->id();
       }

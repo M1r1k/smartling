@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\smartling\SourceManager.
+ * Contains \Drupal\smartling\ProcessorPluginManager.
  */
 
 namespace Drupal\smartling;

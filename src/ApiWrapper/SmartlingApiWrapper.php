@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Smartling settings handler.
+ * Contains \Drupal\smartling\ApiWrapper\SmartlingApiWrapper.
  */
 
 namespace Drupal\smartling\ApiWrapper;

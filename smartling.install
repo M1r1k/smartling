@@ -8,7 +8,7 @@
 /**
  * Implements hook_schema().
  */
-function smartling_schema() {
+function _smartling_schema() {
   $schema['smartling_entity_data'] = array(
     'description' => 'Smartling entity information',
     'fields' => array(

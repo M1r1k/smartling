@@ -2,13 +2,12 @@
 
 /**
  * @file
- * Contains \Drupal\smartling\Normalizer\ListNormalizer.
+ * Contains \Drupal\smartling\Normalizer\FieldListNormalizer.
  */
 
 namespace Drupal\smartling\Normalizer;
 
 use Drupal\serialization\Normalizer\NormalizerBase;
-use Symfony\Component\Serializer\Exception\RuntimeException;
 
 /**
  * Converts list objects to arrays.
@@ -29,7 +28,7 @@ class FieldListNormalizer extends NormalizerBase {
   protected $supportedInterfaceOrClass = 'Drupal\Core\Field\FieldItemListInterface';
 
   /**
-   * Implements \Symfony\Component\Serializer\Normalizer\NormalizerInterface::normalize().
+   * {@inheritdoc}
    */
   public function normalize($object, $format = NULL, array $context = array()) {
     $attributes = array();

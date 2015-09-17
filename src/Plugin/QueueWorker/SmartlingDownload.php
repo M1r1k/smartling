@@ -2,17 +2,13 @@
 
 /**
  * @file
- * Contains \Drupal\locale\Plugin\QueueWorker\LocaleTranslation.
+ * Contains \Drupal\smartling\Plugin\QueueWorker\SmartlingDownload.
  */
 
 namespace Drupal\smartling\Plugin\QueueWorker;
 
-use Drupal\Core\Annotation\QueueWorker;
-use Drupal\Core\Annotation\Translation;
-use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\Queue\QueueInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\smartling\Entity\SmartlingEntityData;
 use Symfony\Component\DependencyInjection\ContainerInterface;

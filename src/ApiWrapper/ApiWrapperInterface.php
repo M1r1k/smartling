@@ -2,11 +2,14 @@
 
 /**
  * @file
- * Contains Drupal\smartling\ApiWrapperInterface.
+ * Contains \Drupal\smartling\ApiWrapperInterface.
  */
 
 namespace Drupal\smartling\ApiWrapper;
 
+/**
+ * Provides an interface defining a smartling API wrapper.
+ */
 interface ApiWrapperInterface {
 
   /**
@@ -68,9 +71,11 @@ interface ApiWrapperInterface {
   public function uploadFile($file_path, $file_name_unic, $file_type, array $locales);
 
   /**
-   * get locale list for project
+   * Gets list of locales for project.
    *
-   * @return array of locales
+   * @return array
+   *   An array of locales.
    */
   public function getLocaleList();
+
 }

@@ -2,22 +2,18 @@
 
 /**
  * @file
- * Contains Drupal\smartling\Plugin\smartling\Source\ContentEntitySource.
+ * Contains \Drupal\smartling\Plugin\smartling\Source\ContentEntitySource.
  */
 
 namespace Drupal\smartling\Plugin\smartling\Source;
 
-use Drupal\Core\Annotation\Translation;
 use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\Core\Entity\EntityManagerInterface;
-use Drupal\Core\Entity\Plugin\DataType\EntityReference;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemInterface;
 use Drupal\Core\TypedData\OptionsProviderInterface;
 use Drupal\Core\TypedData\Type\StringInterface;
 use Drupal\Core\TypedData\PrimitiveInterface;
-use Drupal\smartling\Annotation\SourcePlugin;
-use Drupal\smartling\Entity\SmartlingEntityDataInterface;
+use Drupal\smartling\SmartlingEntityDataInterface;
 use Drupal\smartling\SourcePluginBase;
 use Drupal\Core\Render\Element;
 use Exception;
@@ -34,7 +30,7 @@ use Exception;
 class ContentEntitySource extends SourcePluginBase {
 
   /**
-   * @param \Drupal\smartling\Entity\SmartlingEntityDataInterface $smartling_item
+   * @param \Drupal\smartling\SmartlingEntityDataInterface $smartling_item
    * @return \Drupal\Core\Entity\ContentEntityInterface|null
    */
   protected function getRelatedEntity(SmartlingEntityDataInterface $smartling_item) {

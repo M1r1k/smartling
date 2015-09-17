@@ -1,11 +1,19 @@
 <?php
 
-namespace Drupal\smartling\Entity;
+/**
+ * @file
+ * Contains \Drupal\smartling\SmartlingEntityDataInterface.
+ */
+
+namespace Drupal\smartling;
 
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Language\LanguageInterface;
 
+/**
+ * Provides an interface defining a smartling data entity.
+ */
 interface SmartlingEntityDataInterface extends EntityInterface {
 
   public function getRelatedEntityId();
@@ -59,21 +67,31 @@ interface SmartlingEntityDataInterface extends EntityInterface {
   public function setStatusByEvent($event);
 
   /**
+   * Creates new entity from default values.
+   *
    * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   A content entity.
    * @param \Drupal\Core\Language\LanguageInterface $target_language
-   * @return \Drupal\smartling\Entity\SmartlingEntityDataInterface
+   *   A language to translate.
+   *
+   * @return \Drupal\smartling\SmartlingEntityDataInterface
+   *   Unsaved entity.
    */
   public static function createFromDrupalEntity(ContentEntityInterface $entity, LanguageInterface $target_language);
 
   /**
    * @param array $conditions
-   * @return SmartlingEntityDataInterface[]
+   * @return \Drupal\smartling\SmartlingEntityDataInterface[]
    */
   public static function loadMultipleByConditions(array $conditions);
 
   /**
+   *
+   *
    * @param array $conditions
-   * @return SmartlingEntityDataInterface
+   *
+   * @return \Drupal\smartling\SmartlingEntityDataInterface
    */
   public static function loadByConditions(array $conditions);
+
 }

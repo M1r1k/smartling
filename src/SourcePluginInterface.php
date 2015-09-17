@@ -2,12 +2,11 @@
 
 /**
  * @file
- * Contains \Drupal\tmgmt\SourcePluginInterface.
+ * Contains \Drupal\smartling\SourcePluginInterface.
  */
 
 namespace Drupal\smartling;
 
-use Drupal\smartling\Entity\SmartlingEntityDataInterface;
 use Drupal\Component\Plugin\PluginInspectionInterface;
 
 /**
@@ -18,7 +17,7 @@ interface SourcePluginInterface extends PluginInspectionInterface {
   /**
    * Returns an array with the data structured for translation.
    *
-   * @param \Drupal\smartling\Entity\SmartlingEntityDataInterface $smartling_item
+   * @param \Drupal\smartling\SmartlingEntityDataInterface $smartling_item
    *   The job item entity.
    *
    * @see JobItem::getData()
@@ -28,7 +27,7 @@ interface SourcePluginInterface extends PluginInspectionInterface {
   /**
    * Saves a translation.
    *
-   * @param \Drupal\smartling\Entity\SmartlingEntityDataInterface $smartling_item
+   * @param \Drupal\smartling\SmartlingEntityDataInterface $smartling_item
    *   The smartling item entity.
    *
    * @return boolean
@@ -39,7 +38,7 @@ interface SourcePluginInterface extends PluginInspectionInterface {
   /**
    * Return a title for this job item.
    *
-   * @param \Drupal\smartling\Entity\SmartlingEntityDataInterface $smartling_item
+   * @param \Drupal\smartling\SmartlingEntityDataInterface $smartling_item
    *   The smartling item entity.
    */
   public function getLabel(SmartlingEntityDataInterface $smartling_item);
@@ -47,7 +46,7 @@ interface SourcePluginInterface extends PluginInspectionInterface {
   /**
    * Returns the Uri for this job item.
    *
-   * @param \Drupal\smartling\Entity\SmartlingEntityDataInterface $smartling_item
+   * @param \Drupal\smartling\SmartlingEntityDataInterface $smartling_item
    *   The smartling item entity.
    *
    * @return \Drupal\Core\Url|null
@@ -71,7 +70,7 @@ interface SourcePluginInterface extends PluginInspectionInterface {
   /**
    * Returns the type of a job item.
    *
-   * @param \Drupal\smartling\Entity\SmartlingEntityDataInterface $smartling_item
+   * @param \Drupal\smartling\SmartlingEntityDataInterface $smartling_item
    *   The smartling item.
    *
    * @return string
@@ -82,7 +81,7 @@ interface SourcePluginInterface extends PluginInspectionInterface {
   /**
    * Gets language code of the job item source.
    *
-   * @param \Drupal\smartling\Entity\SmartlingEntityDataInterface $smartling_item
+   * @param \Drupal\smartling\SmartlingEntityDataInterface $smartling_item
    *   The smartling item.
    *
    * @return string
@@ -96,7 +95,7 @@ interface SourcePluginInterface extends PluginInspectionInterface {
    * Returns language codes that can be used as the source language for a
    * translation job.
    *
-   * @param \Drupal\smartling\Entity\SmartlingEntityDataInterface $smartling_item
+   * @param \Drupal\smartling\SmartlingEntityDataInterface $smartling_item
    *   The smartling item.
    *
    * @return array

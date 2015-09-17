@@ -2,14 +2,11 @@
 
 /**
  * @file
- * Contains \Drupal\locale\Plugin\QueueWorker\LocaleTranslation.
+ * Contains \Drupal\smartling\Plugin\QueueWorker\SmartlingCheckStatus.
  */
 
 namespace Drupal\smartling\Plugin\QueueWorker;
 
-use Drupal\Core\Annotation\QueueWorker;
-use Drupal\Core\Annotation\Translation;
-use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueInterface;

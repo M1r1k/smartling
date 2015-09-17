@@ -6,24 +6,23 @@
  */
 
 namespace Drupal\smartling\Entity;
-use Drupal\Core\Annotation\Translation;
-use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
-use Drupal\Core\Entity\Annotation\ContentEntityType;
+
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\Entity;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Language\LanguageInterface;
+use Drupal\smartling\SmartlingEntityDataInterface;
 
 /**
- * Defines the node entity class.
+ * Defines the smartling entity class.
  *
  * @ContentEntityType(
  *   id = "smartling_entity_data",
  *   label = @Translation("Smartling Entity Data"),
  *   controllers = {
- *     "storage" = "Drupal\smartling\SmartlingStorageController",
+ *     "storage" = "Drupal\Core\Entity\Sql\SqlContentEntityStorage",
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder"
  *   },
  *   base_table = "smartling_entity_data",
@@ -296,8 +295,7 @@ class SmartlingEntityData extends ContentEntityBase implements SmartlingEntityDa
   }
 
   /**
-   * @param array $conditions
-   * @return SmartlingEntityDataInterface[]
+   * {@inheritdoc}
    */
   public static function loadMultipleByConditions(array $conditions) {
     $query = \Drupal::entityQuery('smartling_entity_data');
@@ -310,11 +308,11 @@ class SmartlingEntityData extends ContentEntityBase implements SmartlingEntityDa
   }
 
   /**
-   * @param array $conditions
-   * @return SmartlingEntityDataInterface
+   * {@inheritdoc}
    */
   public static function loadByConditions(array $conditions) {
     $entities = static::loadMultipleByConditions($conditions);
     return reset($entities);
   }
+
 }

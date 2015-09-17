@@ -2,14 +2,12 @@
 
 /**
  * @file
- * Contains Drupal\smartling\DefaultSourcePluginController.
+ * Contains \Drupal\smartling\SourcePluginBase.
  */
 
 namespace Drupal\smartling;
 
 use Drupal\Component\Plugin\PluginBase;
-use Drupal\Core\Queue\QueueWorkerBase;
-use Drupal\smartling\Entity\SmartlingEntityDataInterface;
 
 
 /**

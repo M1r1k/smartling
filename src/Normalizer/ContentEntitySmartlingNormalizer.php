@@ -2,12 +2,11 @@
 
 /**
  * @file
- * Contains \Drupal\serialization\Normalizer\ContentEntityNormalizer.
+ * Contains \Drupal\smartling\Normalizer\ContentEntitySmartlingNormalizer.
  */
 
 namespace Drupal\smartling\Normalizer;
-use Drupal\Core\Field\FieldDefinitionInterface;
-use Drupal\Core\Field\FieldItemInterface;
+
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\serialization\Normalizer\EntityNormalizer;
 

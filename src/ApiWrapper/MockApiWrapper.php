@@ -7,9 +7,11 @@
 
 namespace Drupal\smartling\ApiWrapper;
 
-use Drupal\smartling\ApiWrapper\ApiWrapperInterface;
 use SmartlingAPI;
 
+/**
+ * Class MockApiWrapper.
+ */
 class MockApiWrapper implements ApiWrapperInterface {
 
   /**
