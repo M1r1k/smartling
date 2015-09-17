@@ -3,8 +3,7 @@ type: module
 description: 'Smartling automatical translation.'
 package: Smartling
 core: 8.x
-# TODO Add controller for config page admin/config/regional/smartling.
-configure: admin.smartling
+configure: smartling.smartling_settings
 
 dependencies:
   - locale
