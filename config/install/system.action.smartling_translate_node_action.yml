@@ -1,0 +1,9 @@
+id: smartling_translate_node_action
+label: 'Translate node to all configured languages'
+status: true
+langcode: en
+type: node
+plugin: smartling_translate_node_action
+dependencies:
+  module:
+    - smartling
