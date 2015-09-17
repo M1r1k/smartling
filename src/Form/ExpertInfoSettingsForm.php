@@ -2,16 +2,17 @@
 
 /**
  * @file
- * Main settings form.
+ * Contains \Drupal\smartling\Form\ExpertInfoSettingsForm.
  */
 
 namespace Drupal\smartling\Form;
 
-use Drupal;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Url;
 
+/**
+ * Smartling expert settings form.
+ */
 class ExpertInfoSettingsForm extends ConfigFormBase {
 
   /**
@@ -34,39 +35,40 @@ class ExpertInfoSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+    $config = $this->config('smartling.settings');
     $form['log_mode'] = [
       '#type' => 'checkbox',
-      '#title' => t('Smartling log'),
-      '#default_value' => $this->config('smartling.settings')->get('expert.log_mode'),
-      '#description' => t('Log ON dy default.'),
+      '#title' => $this->t('Smartling log'),
+      '#default_value' => $config->get('expert.log_mode'),
+      '#description' => $this->t('Log ON dy default.'),
     ];
 
     $form['async_mode'] = [
       '#type' => 'checkbox',
-      '#title' => t('Asynchronous mode'),
-      '#description' => t('If you uncheck this, the Smartling Connector will attempt to submit content immediately to Smartling servers.'),
-      '#default_value' => $this->config('smartling.settings')->get('expert.async_mode'),
+      '#title' => $this->t('Asynchronous mode'),
+      '#description' => $this->t('If you uncheck this, the Smartling Connector will attempt to submit content immediately to Smartling servers.'),
+      '#default_value' => $config->get('expert.async_mode'),
     ];
 
     $form['convert_entities_before_translation'] = [
       '#type' => 'checkbox',
-      '#title' => t('Convert entities before translation'),
-      '#description' => t('If this is unchecked, then you should convert your content manually from "language-neutral" to default language (usually english) before sending content item for translation.'),
-      '#default_value' => $this->config('smartling.settings')->get('expert.convert_entities_before_translation'),
+      '#title' => $this->t('Convert entities before translation'),
+      '#description' => $this->t('If this is unchecked, then you should convert your content manually from "language-neutral" to default language (usually english) before sending content item for translation.'),
+      '#default_value' => $config->get('expert.convert_entities_before_translation'),
     ];
 
     $form['ui_translations_merge_mode'] = [
       '#type' => 'checkbox',
-      '#title' => t('UI translation mode'),
-      '#description' => t('If checked: Translation import mode keeping existing translations and only inserting new strings, strings overwrite happens otherwise.'),
-      '#default_value' => $this->config('smartling.settings')->get('expert.ui_translations_merge_mode'),
+      '#title' => $this->t('UI translation mode'),
+      '#description' => $this->t('If checked: Translation import mode keeping existing translations and only inserting new strings, strings overwrite happens otherwise.'),
+      '#default_value' => $config->get('expert.ui_translations_merge_mode'),
     ];
 
     $form['custom_regexp_placeholder'] = [
       '#type' => 'textfield',
-      '#title' => t('Custom RegExp for placeholder'),
-      '#description' => t('The content that matches this regular expression will be replaced before translation in Smartling dashboard.'),
-      '#default_value' => $this->config('smartling.settings')->get('expert.custom_regexp_placeholder'),
+      '#title' => $this->t('Custom RegExp for placeholder'),
+      '#description' => $this->t('The content that matches this regular expression will be replaced before translation in Smartling dashboard.'),
+      '#default_value' => $config->get('expert.custom_regexp_placeholder'),
     ];
 
     return parent::buildForm($form, $form_state);

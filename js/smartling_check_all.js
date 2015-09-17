@@ -5,7 +5,8 @@
       if (settings.smartling != undefined && settings.smartling.checkAllId != undefined) {
         $.each(settings.smartling.checkAllId, function (index, id) {
           var $checkboxWrapper = $(id, context),
-            $checkboxesLink = $('#smartling-check-all-' + index, context);
+            $checkboxesSelector = '#smartling-check-all-' + index,
+            $checkboxesLink = $($checkboxesSelector, context);
 
           if ($checkboxesLink.length || $checkboxWrapper.length < 1) {
             return;
@@ -14,20 +15,21 @@
             $checkboxWrapper.addClass('big-select-languages-widget');
           }
 
-          $checkboxWrapper.prepend('<a href="#" id="smartling-check-all-' + index + '">' + Drupal.t('Check/uncheck all') + '</a>');
-          $('#smartling-check-all-' + index, context).click({checkboxWrapper: $checkboxWrapper}, function (e) {
+          $checkboxesLink = $('<a href="#" id="' + $checkboxesSelector + '">' + Drupal.t('Check/uncheck all') + '</a>');
+          $checkboxesLink.click({checkboxWrapper: $checkboxWrapper}, function (e) {
             var $_this = $(this);
             $_this.toggleClass('checked');
             $checkboxWrapper.find(':checkbox').each(function () {
-              if (!!$_this.hasClass('checked')) {
-                $(this).filter(':checked').click();
+              if (!$_this.hasClass('checked')) {
+                $(this).filter(':checked').prop('checked', false);
               }
               else {
-                $(this).filter(':not(:checked)').click();
+                $(this).filter(':not(:checked)').prop('checked', true);
               }
             });
             e.preventDefault();
-            });
+          });
+          $checkboxWrapper.prepend($checkboxesLink);
         });
       }
     }

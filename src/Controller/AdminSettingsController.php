@@ -1,51 +1,41 @@
 <?php
+
 /**
  * @file
  * Contains \Drupal\smartling\Controller\AdminSettingsController.
  */
 
 namespace Drupal\smartling\Controller;
-use Drupal\Core\Form\FormInterface;
+
+use Drupal\Core\Controller\ControllerBase;
 
 /**
- * AdminSettingsController.
+ * Builds the general settings page.
  */
-class AdminSettingsController {
-
-  private function wrapWithFieldset(FormInterface $form, $title) {
-    return [
-      '#type' => 'details',
-      '#group' => 'smartling',
-      '#title' => $title,
-      '#attributes' => array(
-        'class' => array('smartling-' . strtolower(str_replace(' ', '-', $title))),
-        'id' => array('smartling-' . strtolower(str_replace(' ', '-', $title))),
-      ),
-      'children' => $form,
-    ];
-  }
+class AdminSettingsController extends ControllerBase {
 
   /**
    * Generates an example page.
    */
-  public function settingsPage() {
+  public function settings() {
     // Add ajax library.
-   // drupal_add_library('system', 'drupal.ajax');
-    $output['message'] = [
+    // drupal_add_library('system', 'drupal.ajax');
+    // @todo Move to hook_help() implementation.
+    $build['message'] = [
       '#type' => 'markup',
       '#title' => 'Link to submission views',
       '#title_display' => 'invisible',
-    //  @ToDo:
     //  '#prefix' => t('After you configure Smartling module you can <a href="@url">start submitting your content</a>.', array('@url' => url('admin/content/smartling-content'))),
     ];
 
-    $output['smartling'] = [
-      '#type' => 'details',
-      '#theme_wrappers' => array(),
-//      '#attached' => array(
-//        'js' => array(drupal_get_path('module', 'smartling') . '/js/smartling_admin.js'),
-//        'css' => array(drupal_get_path('module', 'smartling') . '/css/smartling_admin.css'),
-//      ),
+    // @todo Implement vertical tabs, they for forms building only
+    $build['smartling_settings'] = [
+      '#type' => 'vertical_tabs',
+      '#parents' => ['smartling_settings'],
+      'group' => ['#groups' => ['smartling_settings' => []]],
+      '#attached' => [
+        'library' => ['smartling/smartling.admin'],
+      ],
     ];
 
     $settings_forms = [
@@ -56,9 +46,24 @@ class AdminSettingsController {
 
     foreach ($settings_forms as $machine_name => $title) {
       $form = \Drupal::formBuilder()->getForm($machine_name);
-      $output[$machine_name . '_details'] = $this->wrapWithFieldset($form, $title);
+      $form_id = str_replace('-', '_', $form['#id']);
+      $title_lower = strtolower(str_replace(' ', '-', $title));
+      $build[$form_id . '_details'] = [
+        '#type' => 'details',
+        '#group' => 'smartling_settings',
+        '#title' => $title,
+        '#attributes' => [
+          'class' => ['smartling-' . $title_lower],
+          // @todo Get rid of IDs from JS.
+          'id' => ['smartling-' . $title_lower],
+        ],
+      ];
+      $build[$form_id . '_details']['form'] = $form;
+      //$build[$form_id . '_details']['form'] = ['#type' => 'markup', '#markup' => 'Form'];
+      $build[$form_id . '_details']['form']['#group'] = $form_id . '_details';
     }
 
-    return $output;
+    return $build;
   }
+
 }

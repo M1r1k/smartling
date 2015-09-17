@@ -1,7 +1,7 @@
 smartling.smartling_settings:
   path: '/admin/config/regional/smartling'
   defaults:
-    _title: 'Account info'
-    _controller: '\Drupal\smartling\Controller\AdminSettingsController::settingsPage'
+    _title: 'Smartling settings'
+    _controller: '\Drupal\smartling\Controller\AdminSettingsController::settings'
   requirements:
     _permission: 'administer smartling'

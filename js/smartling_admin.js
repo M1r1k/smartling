@@ -61,7 +61,7 @@
     attach: function (context, settings) {
       var languagesList = [],
         $targetLanguageWrapper = $('#edit-target-locales', context);
-      $targetLanguageWrapper.find('.form-type-checkbox').each(function () {
+        $targetLanguageWrapper.find('.form-type-checkbox').each(function () {
         var languageCode = $(this).find(':input').attr('value');
         languagesList.push(languageCode);
       });
