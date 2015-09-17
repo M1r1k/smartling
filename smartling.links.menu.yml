@@ -3,3 +3,4 @@ smartling.smartling_settings:
   parent: system.admin_config_regional
   route_name: smartling.smartling_settings
   weight: -21
+  description: 'Manage smartling settings.'
