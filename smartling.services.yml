@@ -21,3 +21,6 @@ services:
     class: Drupal\smartling\Encoder\SmartlingXmlEncoder
     tags:
       - { name: encoder, priority: 10, format: smartling_xml }
+  smartling.api_wrapper:
+    class: Drupal\smartling\ApiWrapper\SmartlingApiWrapper
+    arguments: ['@config.factory', '@logger.channel.smartling']

@@ -13,6 +13,8 @@ use Drupal\Core\Field\FieldItemInterface;
 use Drupal\Core\TypedData\OptionsProviderInterface;
 use Drupal\Core\TypedData\Type\StringInterface;
 use Drupal\Core\TypedData\PrimitiveInterface;
+use Drupal\file\FileInterface;
+use Drupal\smartling\Entity\SmartlingEntityData;
 use Drupal\smartling\SmartlingEntityDataInterface;
 use Drupal\smartling\SourcePluginBase;
 use Drupal\Core\Render\Element;
@@ -223,6 +225,36 @@ class ContentEntitySource extends SourcePluginBase {
     return array();
   }
 
+  public function uploadEntity(SmartlingEntityDataInterface $smartling_item, array $locales) {
+    $file_name = $smartling_item->getFileName();
+    if (!$file_name) {
+      $smartling_item->setFileName(SmartlingEntityData::generateXmlFileName($smartling_item));
+      $file_name = $smartling_item->getFileName();
+    }
+
+    // @todo inject service.
+    $serializer = \Drupal::service('serializer');
+    $data = $serializer->serialize($smartling_item->getRelatedEntity(), 'smartling_xml');
+    $file = $this->saveFile($data, $file_name);
+
+    // @todo inject it
+    $api = \Drupal::service('smartling.api_wrapper');
+    $api->uploadFile(drupal_realpath($file->getFileUri()), $file_name, 'xml', $locales);
+  }
+
+  /**
+   * @param $data
+   * @param $file_name
+   *
+   * @return FileInterface
+   *
+   * @todo throw exception if something is bad. Also add relation to smartling
+   * entity.
+   */
+  public function saveFile($data, $file_name) {
+    return file_save_data($data, 'private://' . $file_name);
+  }
+
   /**
    * Saves translation data in an entity translation.
    *
@@ -241,7 +273,7 @@ class ContentEntitySource extends SourcePluginBase {
 
     $translation = $entity->getTranslation($target_langcode);
 
-    foreach ($data as $name => $field_data) {
+    foreach ($entity as $name => $field_data) {
       foreach (Element::children($field_data) as $delta) {
         $field_item = $field_data[$delta];
         foreach (Element::children($field_item) as $property) {

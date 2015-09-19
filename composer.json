@@ -15,13 +15,7 @@
     ],
     "homepage": "https://www.drupal.org/project/smartling",
     "minimum-stability": "dev",
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/M1r1k/api-sdk-php"
-        }
-    ],
     "require": {
-        "smartling/api-skd-php": "future"
+        "smartling/api-sdk-php": "dev-master"
     }
 }

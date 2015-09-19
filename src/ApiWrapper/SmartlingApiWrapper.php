@@ -10,7 +10,8 @@ namespace Drupal\smartling\ApiWrapper;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
-use SmartlingAPI;
+use Smartling\Api\SmartlingApi;
+use Smartling\Api\FileUploadParameterBuilder;
 
 /**
  * Class SmartlingApiWrapper.
@@ -25,7 +26,7 @@ class SmartlingApiWrapper implements ApiWrapperInterface {
   /**
    * The module handler.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   * @var LoggerChannelInterface
    */
   protected $logger;
 
@@ -57,13 +58,13 @@ class SmartlingApiWrapper implements ApiWrapperInterface {
     $this->settingsHandler = $configs->get('smartling_settings');
     $this->logger = $logger;
 
-    $this->setApi(new \SmartlingAPI($configs->get('account_info.api_url'), $configs->get('account_info.key'), $configs->get('account_info.project_id'), \SmartlingAPI::PRODUCTION_MODE));
+    $this->setApi(new SmartlingAPI($configs->get('account_info.api_url'), $configs->get('account_info.key'), $configs->get('account_info.project_id'), SmartlingAPI::PRODUCTION_MODE));
   }
 
   /**
    * {@inheritdoc}
    */
-  public function setApi(\SmartlingAPI $api) {
+  public function setApi(SmartlingAPI $api) {
     $this->api = $api;
   }
 
@@ -240,7 +241,7 @@ class SmartlingApiWrapper implements ApiWrapperInterface {
       $locales_to_approve[] = $this->convertLocaleDrupalToSmartling($locale);
     }
 
-    $upload_params = new \FileUploadParameterBuilder();
+    $upload_params = new FileUploadParameterBuilder();
     $upload_params->setFileUri($file_name_unic)
       ->setFileType($file_type)
       ->setApproved(0)

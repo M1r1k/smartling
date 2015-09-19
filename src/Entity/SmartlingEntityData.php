@@ -133,6 +133,11 @@ class SmartlingEntityData extends ContentEntityBase implements SmartlingEntityDa
     return $fields;
   }
 
+  public function getRelatedEntity() {
+    // @todo add at least static caching here.
+    return entity_load($this->getRelatedEntityTypeId(), $this->getRelatedEntityId());
+  }
+
   public function getRelatedEntityId() {
     return $this->rid->value;
   }
@@ -182,11 +187,11 @@ class SmartlingEntityData extends ContentEntityBase implements SmartlingEntityDa
   }
 
   public function getFileName() {
-    return $this->fiel_name->value;
+    return $this->file_name->value;
   }
 
   public function setFileName($file_name) {
-    $this->fiel_name->value = $file_name;
+    $this->file_name->value = $file_name;
   }
 
   public function getTranslatedFileName() {
