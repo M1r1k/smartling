@@ -103,7 +103,9 @@ function smartling_form_alter(array &$form, FormStateInterface $form_state) {
   if ($entity instanceof ContentEntityInterface && $entity->isTranslatable() && count($entity->getTranslationLanguages()) > 1 && ($op == 'edit' || $op == 'default')) {
     $controller = \Drupal::entityManager()
       ->getHandler($entity->getEntityTypeId(), 'smartling');
-    $controller->entityFormAlter($form, $form_state, $entity);
+    if ($controller) {
+      $controller->entityFormAlter($form, $form_state, $entity);
+    }
   }
 }
 

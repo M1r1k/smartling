@@ -111,23 +111,4 @@ class SmartlingManager {
     }
   }
 
-  /**
-   * Loads or creates the smartling entity for arguments.
-   *
-   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
-   *   The content entity.
-   * @param \Drupal\Core\Language\LanguageInterface $language
-   *   The language entity to translate.
-   *
-   * @return \Drupal\smartling\SmartlingEntityDataInterface
-   *   The smartling entity.
-   */
-  public function getSmartlingEntityFromContentEntity(ContentEntityInterface $entity, LanguageInterface $language) {
-    if ($smartling_entity = SmartlingEntityData::loadByConditions(['rid' => $entity->id(), 'target_language' => $language->getId()])) {
-      return $smartling_entity;
-    }
-
-    return SmartlingEntityData::createFromDrupalEntity($entity, $language);
-  }
-
 }

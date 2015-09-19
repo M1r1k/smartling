@@ -150,18 +150,41 @@ class SmartlingEntityHandler implements EntityHandlerInterface {
     }
   }
 
+  /**
+   * Callback that sends content to be translated to specific languages.
+   *
+   * @param array $form
+   *   Drupal form array.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Drupal form state object.
+   */
   public function uploadTranslation(array &$form, FormStateInterface $form_state) {
+    $locales = $form_state->getValue('content_translation')['smartling_target_locales'];
+    if (empty($locales)) {
+      return;
+    }
     $form_object = $form_state->getFormObject();
     $entity = $form_object->getEntity();
-    $locales = $form_state->getValue('smartling_target_locales');
     /* @var \Drupal\smartling\Plugin\smartling\Source\ContentEntitySource $source_content_plugin */
-    $source_content_plugin = $this->sourceManager->getDefinition('content');
+    $source_content_plugin = $this->sourceManager->createInstance('content');
     // Get random smartling entity for our entity because we don't care about
     // target language, as we will use only source file name from it.
-    $smartling_entity = SmartlingEntityData::loadByConditions(['rid' => $entity->id()]);
+    foreach ($locales as $locale) {
+      $smartling_entity = $source_content_plugin->getSmartlingEntityFromContentEntity($entity, $this->languageManager->getLanguage($locale));
+    }
     $source_content_plugin->uploadEntity($smartling_entity, $locales);
+    drupal_set_message(t('@entity_title was successfully uploaded to Smartling.', array('@entity_title' => $entity->getLabel())));
+    $form_state->setRedirectUrl('admin/content');
   }
 
+  /**
+   * Callback that downloads content from smartling.
+   *
+   * @param array $form
+   *   Drupal form array.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Drupal form state object.
+   */
   public function downloadTranslation(array &$form, FormStateInterface $form_state) {
     $form_object = $form_state->getFormObject();
     $entity = $form_object->getEntity();
@@ -172,6 +195,8 @@ class SmartlingEntityHandler implements EntityHandlerInterface {
     // target language, as we will use only source file name from it.
     $smartling_entity = SmartlingEntityData::loadByConditions(['rid' => $entity->id()]);
     $source_content_plugin->downloadEntity($smartling_entity, $locales);
+    drupal_set_message(t('@entity_title was successfully downloaded from Smartling.', array('@entity_title' => $entity->getLabel())));
+    $form_state->setRedirectUrl('admin/content');
   }
 
 }

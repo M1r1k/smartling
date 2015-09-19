@@ -275,28 +275,27 @@ class SmartlingEntityData extends ContentEntityBase implements SmartlingEntityDa
    */
   public static function createFromDrupalEntity(ContentEntityInterface $entity, LanguageInterface $target_language) {
     $entity = new static([
-      'rid' => $entity->id(),
-      'entity_type' => $entity->getEntityType(),
-      'bundle' => $entity->bundle(),
-      'original_language' => $entity->language()->getId(),
-      // @todo handle exception when target language invalid or not configured
-      // for given entity.
-      'target_language' => $target_language->getId(),
-      'title' => $entity->label(),
-      'submitter' => \Drupal::currentUser()->id(),
       'submission_date' => REQUEST_TIME,
       'download' => '',
-      'status' => 0,
       'content_hash' => ''
     ]);
 
+    $entity->setRelatedEntityId($entity->id());
+    $entity->setRelatedEntityTypeId($entity->getEntityType()->id());
+    $entity->setRelatedEntityBundleId($entity->bundle());
+    $entity->setTitle($entity->label());
+    $entity->setOriginalLanguageCode($entity->language()->getId());
+    $entity->setTargetLanguageCode($target_language->getId());
     $entity->setFileName(self::generateXmlFileName($entity));
+    // @todo convert to uid base field.
+    $entity->setSubmitter(\Drupal::currentUser()->id());
+    $entity->setStatusByEvent(0);
 
-    return ;
+    return $entity;
   }
 
   public static function generateXmlFileName(SmartlingEntityDataInterface $entity) {
-    return strtolower(trim(preg_replace('#\W+#', '_', $entity->getTitle()), '_')) . '_' . $entity->getEntityType() . '_' . $entity->getRID() . '.xml';
+    return strtolower(trim(preg_replace('#\W+#', '_', $entity->getTitle()), '_')) . '_' . $entity->getEntityType() . '_' . $entity->getRelatedEntityId() . '.xml';
   }
 
   /**
