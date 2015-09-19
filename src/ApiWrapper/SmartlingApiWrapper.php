@@ -7,7 +7,6 @@
 
 namespace Drupal\smartling\ApiWrapper;
 
-use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Smartling\Api\SmartlingApi;
@@ -19,14 +18,14 @@ use Smartling\Api\FileUploadParameterBuilder;
 class SmartlingApiWrapper implements ApiWrapperInterface {
 
   /**
-   * @var ConfigFactory
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
   protected $config;
 
   /**
    * The module handler.
    *
-   * @var LoggerChannelInterface
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
    */
   protected $logger;
 
@@ -51,8 +50,8 @@ class SmartlingApiWrapper implements ApiWrapperInterface {
   /**
    * Initialize.
    *
-   * @param ConfigFactoryInterface $configs
-   * @param LoggerChannelInterface $logger
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configs
+   * @param \Drupal\Core\Logger\LoggerChannelInterface $logger
    */
   public function __construct(ConfigFactoryInterface $configs, LoggerChannelInterface $logger) {
     $this->settingsHandler = $configs->get('smartling_settings');

@@ -225,6 +225,14 @@ class ContentEntitySource extends SourcePluginBase {
     return array();
   }
 
+  /**
+   * Upload content from give smartling entity to smartling as file.
+   *
+   * @param \Drupal\smartling\SmartlingEntityDataInterface $smartling_item
+   *   Smartling entity object.
+   * @param array $locales
+   *   List of locales ask Smartling translate source entity to.
+   */
   public function uploadEntity(SmartlingEntityDataInterface $smartling_item, array $locales) {
     $file_name = $smartling_item->getFileName();
     if (!$file_name) {
@@ -243,10 +251,20 @@ class ContentEntitySource extends SourcePluginBase {
   }
 
   /**
+   * Download latest version of translation for given smartling entity.
+   *
+   * @param \Drupal\smartling\SmartlingEntityDataInterface $smartling_entity
+   *   Smartling entity object.
+   */
+  public function downloadEntity(SmartlingEntityDataInterface $smartling_entity) {
+    // @todo
+  }
+
+  /**
    * @param $data
    * @param $file_name
    *
-   * @return FileInterface
+   * @return \Drupal\file\FileInterface
    *
    * @todo throw exception if something is bad. Also add relation to smartling
    * entity.
@@ -273,7 +291,7 @@ class ContentEntitySource extends SourcePluginBase {
 
     $translation = $entity->getTranslation($target_langcode);
 
-    foreach ($entity as $name => $field_data) {
+    foreach ($translation as $name => $field_data) {
       foreach (Element::children($field_data) as $delta) {
         $field_item = $field_data[$delta];
         foreach (Element::children($field_item) as $property) {
