@@ -16,58 +16,8 @@ use Drupal\Core\Language\LanguageInterface;
  */
 interface SmartlingEntityDataInterface extends EntityInterface {
 
-  public function getRelatedEntityId();
-
-  public function setRelatedEntityId($related_entity_id);
-
-  public function getRelatedEntityTypeId();
-
-  public function setRelatedEntityTypeId($related_entity_type_id);
-
-  public function getRelatedEntityBundleId();
-
-  public function setRelatedEntityBundleId($related_entity_bundle_id);
-
-  public function getOriginalLanguageCode();
-
-  public function setOriginalLanguageCode($language_code);
-
-  public function getTargetLanguageCode();
-
-  public function setTargetLanguageCode($language_code);
-
-  public function getTitle();
-
-  public function setTitle($title);
-
-  public function getFileName();
-
-  public function setFileName($file_name);
-
-  public function getTranslatedFileName();
-
-  public function setTranslatedFileName($file_name);
-
-  public function getProgress();
-
-  public function setProgress();
-
-  public function getSubmitter();
-
-  public function setSubmitter($submitter);
-
-  public function getSubmissionDate();
-
-  public function getDownloadStatus();
-
-  public function getStatus();
-
-  public function getContentHash();
-
-  public function setStatusByEvent($event);
-
   /**
-   * Creates new entity from default values.
+   * Creates new entity from Content Entity.
    *
    * @param \Drupal\Core\Entity\ContentEntityInterface $entity
    *   A content entity.
@@ -80,13 +30,16 @@ interface SmartlingEntityDataInterface extends EntityInterface {
   public static function createFromDrupalEntity(ContentEntityInterface $entity, LanguageInterface $target_language);
 
   /**
+   * Load all entities using some conditions.
+   *
    * @param array $conditions
+   *
    * @return \Drupal\smartling\SmartlingEntityDataInterface[]
    */
   public static function loadMultipleByConditions(array $conditions);
 
   /**
-   *
+   * Load first entity that matches conditions.
    *
    * @param array $conditions
    *

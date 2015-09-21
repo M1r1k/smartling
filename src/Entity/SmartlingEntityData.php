@@ -128,110 +128,12 @@ class SmartlingEntityData extends ContentEntityBase implements SmartlingEntityDa
       ->setDescription(t('Smartling submission submitter'))
       ->setReadOnly(TRUE);
 
-    // @todo add other fields.
-
     return $fields;
   }
 
   public function getRelatedEntity() {
     // @todo add at least static caching here.
-    return entity_load($this->getRelatedEntityTypeId(), $this->getRelatedEntityId());
-  }
-
-  public function getRelatedEntityId() {
-    return $this->rid->value;
-  }
-
-  public function setRelatedEntityId($related_entity_id) {
-    $this->rid->value = $related_entity_id;
-  }
-
-  public function getRelatedEntityTypeId() {
-    return $this->entity_type->value;
-  }
-
-  public function setRelatedEntityTypeId($related_entity_type_id) {
-    $this->entity_type->value = $related_entity_type_id;
-  }
-
-  public function getRelatedEntityBundleId() {
-    return $this->bundle->value;
-  }
-
-  public function setRelatedEntityBundleId($related_entity_bundle_id) {
-    $this->bundle->value = $related_entity_bundle_id;
-  }
-
-  public function getOriginalLanguageCode() {
-    return $this->original_language->value;
-  }
-
-  public function setOriginalLanguageCode($language_code) {
-    $this->original_language->value = $language_code;
-  }
-
-  public function getTargetLanguageCode() {
-    return $this->target_language->value;
-  }
-
-  public function setTargetLanguageCode($language_code) {
-    $this->target_language->value = $language_code;
-  }
-
-  public function getTitle() {
-    return $this->title->value;
-  }
-
-  public function setTitle($title) {
-    $this->title->value = $title;
-  }
-
-  public function getFileName() {
-    return $this->file_name->value;
-  }
-
-  public function setFileName($file_name) {
-    $this->file_name->value = $file_name;
-  }
-
-  public function getTranslatedFileName() {
-    // TODO: Implement getTranslatedFileName() method.
-  }
-
-  public function setTranslatedFileName($file_name) {
-    // TODO: Implement setTranslatedFileName() method.
-  }
-
-  public function getProgress() {
-    // TODO: Implement getProgress() method.
-  }
-
-  public function setProgress() {
-    // TODO: Implement setProgress() method.
-  }
-
-  public function getSubmitter() {
-    // TODO: Implement getSubmitter() method.
-  }
-
-  public function setSubmitter($submitter) {
-    // TODO: Implement setSubmitter() method.
-  }
-
-  public function getSubmissionDate() {
-    // TODO: Implement getSubmissionDate() method.
-  }
-
-  public function getDownloadStatus() {
-    // TODO: Implement getDownloadStatus() method.
-  }
-
-  public function getStatus() {
-    return $this->status->value;
-  }
-
-  public function getContentHash() {
-    // TODO: Implement getContentHash() method.
+    return entity_load($this->get('rid')->value, $this->get('entity_type')->value);
   }
 
   public function setStatusByEvent($event) {
@@ -239,7 +141,7 @@ class SmartlingEntityData extends ContentEntityBase implements SmartlingEntityDa
       return;
     }
 
-    $status = $this->getStatus();
+    $status = $this->get('status')->value;
     switch ($event) {
       case SMARTLING_STATUS_EVENT_SEND_TO_UPLOAD_QUEUE:
         if (empty($status) || ($status == SMARTLING_STATUS_CHANGE)) {
@@ -253,7 +155,7 @@ class SmartlingEntityData extends ContentEntityBase implements SmartlingEntityDa
 
       case SMARTLING_STATUS_EVENT_DOWNLOAD_FROM_SERVICE:
       case SMARTLING_STATUS_EVENT_UPDATE_FIELDS:
-        if ($status != SMARTLING_STATUS_CHANGE && $this->getProgress() == 100) {
+        if ($status != SMARTLING_STATUS_CHANGE && $this->get('progress')->value == 100) {
           $status = SMARTLING_STATUS_TRANSLATED;
         }
         break;
@@ -267,35 +169,31 @@ class SmartlingEntityData extends ContentEntityBase implements SmartlingEntityDa
         break;
     }
 
-    $this->setStatus($status);
+    $this->set('status', $status);
   }
 
   /**
    * {@inheritdoc}
    */
   public static function createFromDrupalEntity(ContentEntityInterface $entity, LanguageInterface $target_language) {
-    $entity = new static([
-      'submission_date' => REQUEST_TIME,
-      'download' => '',
-      'content_hash' => ''
+    $smartling_entity = self::create([
+      'rid' => $entity->id(),
+      'entity_type' => $entity->getEntityType()->id(),
+      'bundle' => $entity->bundle(),
+      'title' => $entity->label(),
+      'original_language' => $entity->language()->getId(),
+      'target_language' => $target_language->getId(),
+      'submitter' => \Drupal::currentUser()->id(),
     ]);
 
-    $entity->setRelatedEntityId($entity->id());
-    $entity->setRelatedEntityTypeId($entity->getEntityType()->id());
-    $entity->setRelatedEntityBundleId($entity->bundle());
-    $entity->setTitle($entity->label());
-    $entity->setOriginalLanguageCode($entity->language()->getId());
-    $entity->setTargetLanguageCode($target_language->getId());
-    $entity->setFileName(self::generateXmlFileName($entity));
-    // @todo convert to uid base field.
-    $entity->setSubmitter(\Drupal::currentUser()->id());
-    $entity->setStatusByEvent(0);
+    $smartling_entity->set('file_name', self::generateXmlFileName($smartling_entity));
+    $smartling_entity->setStatusByEvent(0);
 
-    return $entity;
+    return $smartling_entity;
   }
 
   public static function generateXmlFileName(SmartlingEntityDataInterface $entity) {
-    return strtolower(trim(preg_replace('#\W+#', '_', $entity->getTitle()), '_')) . '_' . $entity->getEntityType() . '_' . $entity->getRelatedEntityId() . '.xml';
+    return strtolower(trim(preg_replace('#\W+#', '_', $entity->get('title')->value), '_')) . '_' . $entity->get('entity_type')->value . '_' . $entity->get('rid')->value . '.xml';
   }
 
   /**
