@@ -128,12 +128,30 @@ class SmartlingEntityData extends ContentEntityBase implements SmartlingEntityDa
       ->setDescription(t('Smartling submission submitter'))
       ->setReadOnly(TRUE);
 
+    $fields['status'] = BaseFieldDefinition::create('integer')
+      ->setLabel(t('Smartling submission status'))
+      ->setDescription(t('Smartling submission status'))
+      ->setReadOnly(TRUE);
+
+    $fields['content_hash'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Smartling submission status'))
+      ->setDescription(t('Smartling submission status'))
+      ->setReadOnly(TRUE);
+
+    $fields['submission_date'] = BaseFieldDefinition::create('timestamp')
+      ->setLabel(t('Smartling submission status'))
+      ->setDescription(t('Smartling submission status'))
+      ->setReadOnly(TRUE);
+
     return $fields;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getRelatedEntity() {
     // @todo add at least static caching here.
-    return entity_load($this->get('rid')->value, $this->get('entity_type')->value);
+    return entity_load($this->get('entity_type')->value, $this->get('rid')->value);
   }
 
   public function setStatusByEvent($event) {

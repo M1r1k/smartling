@@ -6,6 +6,7 @@
  */
 
 namespace Drupal\smartling\ApiWrapper;
+use Smartling\SmartlingApi;
 
 /**
  * Provides an interface defining a smartling API wrapper.
@@ -15,10 +16,10 @@ interface ApiWrapperInterface {
   /**
    * Set Smartling API instance.
    *
-   * @param \SmartlingAPI $api
+   * @param \Smartling\SmartlingApi $api
    *   Smartling API object from Smartling PHP SDK.
    */
-  public function setApi(\SmartlingAPI $api);
+  public function setApi(SmartlingApi $api);
 
   /**
    * Download file from service.

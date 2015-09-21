@@ -9,8 +9,9 @@ namespace Drupal\smartling\ApiWrapper;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
-use Smartling\Api\SmartlingApi;
-use Smartling\Api\FileUploadParameterBuilder;
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
+use Smartling\SmartlingApi;
 
 /**
  * Class SmartlingApiWrapper.
@@ -30,7 +31,7 @@ class SmartlingApiWrapper implements ApiWrapperInterface {
   protected $logger;
 
   /**
-   * @var SmartlingAPI
+   * @var \Smartling\SmartlingApi
    */
   protected $api;
 
@@ -52,27 +53,29 @@ class SmartlingApiWrapper implements ApiWrapperInterface {
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configs
    * @param \Drupal\Core\Logger\LoggerChannelInterface $logger
+   * @param \GuzzleHttp\ClientInterface $http_client
    */
-  public function __construct(ConfigFactoryInterface $configs, LoggerChannelInterface $logger) {
+  public function __construct(ConfigFactoryInterface $configs, LoggerChannelInterface $logger, ClientInterface $http_client) {
     $this->settingsHandler = $configs->get('smartling_settings');
     $this->logger = $logger;
 
-    $this->setApi(new SmartlingAPI($configs->get('account_info.api_url'), $configs->get('account_info.key'), $configs->get('account_info.project_id'), SmartlingAPI::PRODUCTION_MODE));
+    $this->setApi(new SmartlingApi($configs->get('account_info.api_url'), $configs->get('account_info.key'), $configs->get('account_info.project_id'), $http_client, SmartlingApi::PRODUCTION_MODE));
   }
 
   /**
    * {@inheritdoc}
    */
-  public function setApi(SmartlingAPI $api) {
+  public function setApi(SmartlingApi $api) {
     $this->api = $api;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getLocaleList() {
-    $response = $this->api->getLocaleList();
-    $response = json_decode($response);
-    $locales = isset($response->response->data->locales) ? $response->response->data->locales : array();
+    $data = $this->api->getLocaleList();
     $result = array();
-    foreach ($locales as $locale) {
+    foreach ($data['locales'] as $locale) {
       $result[$locale->locale] = "{$locale->name} ({$locale->translated})";
     }
 
@@ -86,51 +89,18 @@ class SmartlingApiWrapper implements ApiWrapperInterface {
     $smartling_entity_type = $smartling_entity->entity_type;
     $d_locale = $smartling_entity->target_language;
     $file_name_unic = $smartling_entity->file_name;
-    $file_path = $this->settingsHandler->getDir($file_name_unic);
 
-    $retrieval_type = $this->settingsHandler->variableGet('smartling_retrieval_type', 'published');
-    $download_param = array(
-      'retrievalType' => $retrieval_type,
-    );
+    $retrieval_type = $this->config->get('smartling_settings')->get('retrieval_type');
+    $download_param = array('retrievalType' => $retrieval_type);
 
     $this->logger->info("Smartling queue start download '@file_name' file and update fields for @entity_type id - @rid, locale - @locale.",
       array('@file_name' => $file_name_unic, '@entity_type' => $smartling_entity_type, '@rid' => $smartling_entity->rid, '@locale' => $smartling_entity->target_language));
 
     $s_locale = $this->convertLocaleDrupalToSmartling($d_locale);
-    // Try to download file.
-    $download_result = $this->api->downloadFile($file_name_unic, $s_locale, $download_param);
+    // @todo catch exception.
+    $file_data = $this->api->downloadFile($file_name_unic, $s_locale, $download_param);
 
-    if (isset($download_result->response->code)) {
-      $download_result = json_decode($download_result);
-
-      $code = '';
-      $messages = array();
-      if (isset($download_result->response)) {
-        $code =  isset($download_result->response->code) ? $download_result->response->code : array();
-        $messages = isset($download_result->response->messages) ? $download_result->response->messages : array();
-      }
-
-
-      $this->logger->error('smartling_queue_download_translated_item_process try to download file:<br/>
-      Project Id: @project_id <br/>
-      Action: download <br/>
-      URI: @file_uri <br/>
-      Drupal Locale: @d_locale <br/>
-      Smartling Locale: @s_locale <br/>
-      Error: response code -> @code and message -> @message',
-        array(
-          '@project_id' => $this->settingsHandler->getProjectId(),
-          '@file_uri' => $file_name_unic,
-          '@d_locale' => $d_locale,
-          '@s_locale' => $s_locale,
-          '@code' => $code,
-          '@message' => implode(' || ', $messages),
-        ), TRUE);
-
-      return FALSE;
-    }
-
-    return $download_result;
+    return $file_data;
   }
 
 

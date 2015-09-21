@@ -17,6 +17,11 @@ use Drupal\Core\Language\LanguageInterface;
 interface SmartlingEntityDataInterface extends EntityInterface {
 
   /**
+   * @return \Drupal\Core\Entity\ContentEntityInterface
+   */
+  public function getRelatedEntity();
+
+  /**
    * Creates new entity from Content Entity.
    *
    * @param \Drupal\Core\Entity\ContentEntityInterface $entity

@@ -8,3 +8,4 @@ configure: smartling.smartling_settings
 dependencies:
   - locale
   - content_translation
+  - serialization

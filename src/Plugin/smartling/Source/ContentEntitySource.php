@@ -14,7 +14,6 @@ use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\TypedData\OptionsProviderInterface;
 use Drupal\Core\TypedData\Type\StringInterface;
 use Drupal\Core\TypedData\PrimitiveInterface;
-use Drupal\file\FileInterface;
 use Drupal\smartling\Entity\SmartlingEntityData;
 use Drupal\smartling\SmartlingEntityDataInterface;
 use Drupal\smartling\SourcePluginBase;
@@ -33,19 +32,10 @@ use Exception;
 class ContentEntitySource extends SourcePluginBase {
 
   /**
-   * @param \Drupal\smartling\SmartlingEntityDataInterface $smartling_item
-   * @return \Drupal\Core\Entity\ContentEntityInterface|null
-   */
-  protected function getRelatedEntity(SmartlingEntityDataInterface $smartling_item) {
-    // @todo add static caching.
-    return entity_load($smartling_item->getRelatedEntityTypeId(), $smartling_item->getRelatedEntityId());
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function getLabel(SmartlingEntityDataInterface $smartling_item) {
-    if ($entity = $this->getRelatedEntity($smartling_item)) {
+    if ($entity = $smartling_item->getRelatedEntity()) {
       return $entity->label();
     }
   }
@@ -54,7 +44,7 @@ class ContentEntitySource extends SourcePluginBase {
    * {@inheritdoc}
    */
   public function getUrl(SmartlingEntityDataInterface $smartling_item) {
-    if ($entity = $this->getRelatedEntity($smartling_item)) {
+    if ($entity = $smartling_item->getRelatedEntity()) {
       return $entity->urlInfo();
     }
   }
@@ -62,12 +52,19 @@ class ContentEntitySource extends SourcePluginBase {
   /**
    * Returns the data from the fields as a structure that can be processed by
    * the Smartling.
+   *
+   * @param \Drupal\smartling\SmartlingEntityDataInterface $smartling_item
+   *   SmartlingData entity.
+   *
+   * @return array
+   *
+   * @throws \Exception
    */
   public function getData(SmartlingEntityDataInterface $smartling_item) {
-    $entity = $entity = $this->getRelatedEntity($smartling_item);
+    $entity = $smartling_item->getRelatedEntity();
     if (!$entity) {
       // @todo provide own exceptions.
-      throw new Exception(t('Unable to load entity %type with id %id', array('%type' => $smartling_item->getRelatedEntityTypeId(), $smartling_item->getRelatedEntityId())));
+      throw new Exception(t('Unable to load entity %type with id %id', array('%type' => $smartling_item->get('entity_type')->value, $smartling_item->get('rid')->value)));
     }
     // @todo inject through the DI.
     $languages = \Drupal::languageManager()->getLanguages();
@@ -76,11 +73,11 @@ class ContentEntitySource extends SourcePluginBase {
       throw new Exception(t('Entity %entity could not be translated because the language %language is not applicable', array('%entity' => $entity->language()->getId(), '%language' => $entity->language()->getName())));
     }
 
-    if (!$entity->hasTranslation($smartling_item->getOriginalLanguageCode())) {
+    if (!$entity->hasTranslation($smartling_item->get('original_language')->value)) {
       throw new Exception(t('The entity %id with translation %lang does not exist.', array('%id' => $entity->id(), '%lang' => $smartling_item->getOriginalLanguageCode())));
     }
 
-    $translation = $entity->getTranslation($smartling_item->getOriginalLanguageCode());
+    $translation = $entity->getTranslation($smartling_item->get('original_language')->value);
     $data = $this->extractTranslatableData($translation);
     return $data;
   }
@@ -159,11 +156,11 @@ class ContentEntitySource extends SourcePluginBase {
    */
   public function saveTranslation(SmartlingEntityDataInterface $smartling_item) {
     /* @var \Drupal\Core\Entity\ContentEntityInterface $entity */
-    $entity = $this->getRelatedEntity($smartling_item);
-    $file = $smartling_item->getFileName();
+    $entity = $smartling_item->getRelatedEntity();
+    $file = $smartling_item->get('file_name')->value;
     // @todo process xml file and retrieve data.
     $xml = [];
-    $this->doSaveTranslations($entity, $data, $smartling_item->getTargetLanguageCode());
+    $this->doSaveTranslations($entity, $data, $smartling_item->get('target_language'));
   }
 
   /**
@@ -193,13 +190,13 @@ class ContentEntitySource extends SourcePluginBase {
    * {@inheritdoc}
    */
   public function getType(SmartlingEntityDataInterface $smartling_item) {
-    if ($entity = $this->getRelatedEntity($smartling_item)) {
-      $bundles = \Drupal::entityManager()->getBundleInfo($smartling_item->getRelatedEntityTypeId());
+    if ($entity = $smartling_item->getRelatedEntity()) {
+      $bundles = \Drupal::entityManager()->getBundleInfo($smartling_item->get('entity_type')->value);
       $entity_type = $entity->getEntityType();
       $bundle = $entity->bundle();
       // Display entity type and label if we have one and the bundle isn't
       // the same as the entity type.
-      if (isset($bundles[$bundle]) && $bundle != $smartling_item->getRelatedEntityTypeId()) {
+      if (isset($bundles[$bundle]) && $bundle != $smartling_item->get('entity_type')->value) {
         return t('@type (@bundle)', array('@type' => $entity_type->getLabel(), '@bundle' => $bundles[$bundle]['label']));
       }
       // Otherwise just display the entity type label.
@@ -211,7 +208,7 @@ class ContentEntitySource extends SourcePluginBase {
    * {@inheritdoc}
    */
   public function getSourceLangCode(SmartlingEntityDataInterface $smartling_item) {
-    $entity = $this->getRelatedEntity($smartling_item);
+    $entity = $smartling_item->getRelatedEntity();
     return $entity->getUntranslated()->language()->getId();
   }
 
@@ -219,7 +216,7 @@ class ContentEntitySource extends SourcePluginBase {
    * {@inheritdoc}
    */
   public function getExistingLangCodes(SmartlingEntityDataInterface $smartling_item) {
-    if ($entity = $this->getRelatedEntity($smartling_item)) {
+    if ($entity = $smartling_item->getRelatedEntity()) {
       return array_keys($entity->getTranslationLanguages());
     }
 
@@ -235,10 +232,11 @@ class ContentEntitySource extends SourcePluginBase {
    *   List of locales ask Smartling translate source entity to.
    */
   public function uploadEntity(SmartlingEntityDataInterface $smartling_item, array $locales) {
-    $file_name = $smartling_item->getFileName();
+    $file_name = $smartling_item->get('file_name')->value;
     if (!$file_name) {
-      $smartling_item->setFileName(SmartlingEntityData::generateXmlFileName($smartling_item));
-      $file_name = $smartling_item->getFileName();
+      $file_name = SmartlingEntityData::generateXmlFileName($smartling_item);
+      $smartling_item->set('file_name', $file_name);
+      $smartling_item->save();
     }
 
     // @todo inject service.
