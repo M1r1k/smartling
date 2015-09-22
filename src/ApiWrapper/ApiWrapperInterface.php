@@ -6,6 +6,7 @@
  */
 
 namespace Drupal\smartling\ApiWrapper;
+use Drupal\smartling\SmartlingEntityDataInterface;
 use Smartling\SmartlingApi;
 
 /**
@@ -24,24 +25,24 @@ interface ApiWrapperInterface {
   /**
    * Download file from service.
    *
-   * @param object $entity
+   * @param \Drupal\smartling\SmartlingEntityDataInterface $smartling_entity
    *   Smartling transaction entity.
    *
    * @return \DOMDocument|boolean
    *   Return xml dom from downloaded file.
    */
-  public function downloadFile($entity);
+  public function downloadFile(SmartlingEntityDataInterface $smartling_entity);
 
   /**
    * Get status of given entity's translation progress.
    *
-   * @param object $entity
+   * @param \Drupal\smartling\SmartlingEntityDataInterface $smartling_entity
    *   Smartling transaction entity.
    *
    * @return array|null
    *   Return status.
    */
-  public function getStatus($entity);
+  public function getStatus(SmartlingEntityDataInterface $smartling_entity);
 
   /**
    * Test Smartling API instance init and connection to Smartling server.
